@@ -148,9 +148,22 @@ class ReportController extends Controller
         $recentTransactions = InventoryTransaction::with(['product', 'warehouse', 'operator'])
             ->orderByDesc('created_at')->take(30)->get();
 
+        // Pre-encode logo as base64 in the controller so the view stays clean.
+        // Resize to ~100px height to keep PDF file size reasonable.
+        $logoBase64 = $this->buildLogoBase64(100);
+
         $pdf = Pdf::loadView('reports.inventory-pdf', compact(
-            'warehouses', 'stockSummary', 'totalValue', 'totalStock', 'criticalItems', 'recentTransactions'
-        ))->setPaper('a4', 'landscape');
+            'warehouses', 'stockSummary', 'totalValue', 'totalStock',
+            'criticalItems', 'recentTransactions', 'logoBase64'
+        ))
+        ->setPaper('a4', 'landscape')
+        ->setOptions([
+            'defaultFont'  => 'DejaVu Sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'     => false,
+            'isFontSubsettingEnabled' => true,
+            'dpi' => 100,
+        ]);
 
         $filename = 'SmartStock_Pro_Laporan_Inventaris_' . now()->format('d-m-Y') . '.pdf';
 
@@ -158,5 +171,50 @@ class ReportController extends Controller
             'Content-Type'        => 'application/pdf',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    /**
+     * Resize the logo PNG and return it as a data-URI-ready base64 string.
+     * Falls back to the raw file if the GD extension is unavailable.
+     */
+    private function buildLogoBase64(int $targetHeight = 100): string
+    {
+        $path = public_path('smartstockpro.png');
+
+        if (!file_exists($path)) {
+            return '';
+        }
+
+        // Attempt resize via GD for a smaller PDF footprint
+        if (extension_loaded('gd') && function_exists('imagecreatefrompng')) {
+            try {
+                $src = @imagecreatefrompng($path);
+                if ($src) {
+                    $origW = imagesx($src);
+                    $origH = imagesy($src);
+                    $scale = $targetHeight / $origH;
+                    $newW  = (int) round($origW * $scale);
+                    $newH  = $targetHeight;
+
+                    $dst = imagecreatetruecolor($newW, $newH);
+                    imagealphablending($dst, false);
+                    imagesavealpha($dst, true);
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+
+                    ob_start();
+                    imagepng($dst, null, 6);
+                    $data = ob_get_clean();
+
+                    imagedestroy($src);
+                    imagedestroy($dst);
+
+                    return base64_encode($data);
+                }
+            } catch (\Throwable) {
+                // fall through
+            }
+        }
+
+        return base64_encode(file_get_contents($path));
     }
 }

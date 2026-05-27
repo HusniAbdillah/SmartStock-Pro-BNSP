@@ -60,6 +60,9 @@ class GenerateLargeReport implements ShouldQueue
             ->take(50)
             ->get();
 
+        // Pre-encode logo (resize via GD if available)
+        $logoBase64 = $this->buildLogoBase64(100);
+
         // Render PDF Blade template
         $pdf = Pdf::loadView('reports.inventory-pdf', compact(
             'warehouses',
@@ -68,7 +71,16 @@ class GenerateLargeReport implements ShouldQueue
             'totalStock',
             'criticalItems',
             'recentTransactions',
-        ))->setPaper('a4', 'landscape');
+            'logoBase64',
+        ))
+        ->setPaper('a4', 'landscape')
+        ->setOptions([
+            'defaultFont'             => 'DejaVu Sans',
+            'isHtml5ParserEnabled'    => true,
+            'isRemoteEnabled'         => false,
+            'isFontSubsettingEnabled' => true,
+            'dpi' => 100,
+        ]);
 
         // Save to storage
         $directory = 'reports';
@@ -81,6 +93,45 @@ class GenerateLargeReport implements ShouldQueue
             'source'     => 'report_generation',
             'created_at' => now(),
         ]);
+    }
+
+    private function buildLogoBase64(int $targetHeight = 100): string
+    {
+        $path = public_path('smartstockpro.png');
+
+        if (!file_exists($path)) {
+            return '';
+        }
+
+        if (extension_loaded('gd') && function_exists('imagecreatefrompng')) {
+            try {
+                $src = @imagecreatefrompng($path);
+                if ($src) {
+                    $origW = imagesx($src);
+                    $origH = imagesy($src);
+                    $scale = $targetHeight / $origH;
+                    $newW  = (int) round($origW * $scale);
+
+                    $dst = imagecreatetruecolor($newW, $targetHeight);
+                    imagealphablending($dst, false);
+                    imagesavealpha($dst, true);
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $targetHeight, $origW, $origH);
+
+                    ob_start();
+                    imagepng($dst, null, 6);
+                    $data = ob_get_clean();
+
+                    imagedestroy($src);
+                    imagedestroy($dst);
+
+                    return base64_encode($data);
+                }
+            } catch (\Throwable) {
+                // fall through
+            }
+        }
+
+        return base64_encode(file_get_contents($path));
     }
 
     public function failed(\Throwable $e): void
