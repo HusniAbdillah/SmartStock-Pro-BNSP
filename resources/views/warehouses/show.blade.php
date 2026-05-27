@@ -97,7 +97,14 @@
             <div class="px-5 py-4" style="border-bottom:1px solid #E5EDF5;">
                 <h4 style="font-size:13px; font-weight:500; color:#061B31;">Lokasi</h4>
             </div>
-            <div id="miniMap" data-lat="{{ $warehouse->lat }}" data-lng="{{ $warehouse->lng }}" style="height:180px;"></div>
+            <div class="leaflet-map-host" style="height:220px;">
+                <div id="miniMap"
+                     data-lat="{{ $warehouse->lat }}"
+                     data-lng="{{ $warehouse->lng }}"
+                     data-name="{{ $warehouse->name }}"
+                     data-city="{{ $warehouse->city ?? '' }}"
+                     style="width:100%;height:100%;min-height:220px;"></div>
+            </div>
             <div class="px-5 py-3">
                 <p style="font-size:12px; color:#64748D; font-family:monospace;">{{ $warehouse->lat }}, {{ $warehouse->lng }}</p>
             </div>
@@ -131,21 +138,28 @@
 
 @push('scripts')
 <script>
-(function () {
+SmartStockMaps.ready(function () {
     var mapEl = document.getElementById('miniMap');
     if (!mapEl) return;
+
     var lat = parseFloat(mapEl.dataset.lat);
     var lng = parseFloat(mapEl.dataset.lng);
-    if (!lat || !lng) return;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
-    var miniMap = L.map('miniMap', { zoomControl: false, scrollWheelZoom: false, dragging: false });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 16 }).addTo(miniMap);
-    var icon = L.divIcon({
-        html: '<div style="width:24px;height:24px;background:#533AFD;border:2px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(83,58,253,0.3);"></div>',
-        className: '', iconSize: [24, 24], iconAnchor: [12, 12]
+    var map = SmartStockMaps.createMap('miniMap', {
+        zoomControl: true,
+        scrollWheelZoom: false,
+        dragging: true,
     });
-    L.marker([lat, lng], { icon: icon }).addTo(miniMap);
-    miniMap.setView([lat, lng], 13);
-})();
+    if (!map) return;
+
+    var name = mapEl.dataset.name || '';
+    var city = mapEl.dataset.city || '';
+    L.marker([lat, lng], { icon: SmartStockMaps.warehouseIcon() })
+        .addTo(map)
+        .bindPopup('<strong style="font-size:13px;color:#061B31;">' + name + '</strong><p style="font-size:12px;color:#64748D;margin:4px 0 0;">' + city + '</p>');
+
+    map.setView([lat, lng], 13);
+});
 </script>
 @endpush

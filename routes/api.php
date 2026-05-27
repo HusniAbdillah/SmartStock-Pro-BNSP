@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ServerResourceController;
+use App\Http\Controllers\Api\StockController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -10,6 +11,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/health', [ServerResourceController::class, 'health'])
          ->name('api.health');
+
+    Route::get('/stock', [StockController::class, 'show'])
+         ->name('api.stock.show');
 
     Route::get('/notifications/unread', [NotificationController::class, 'unread'])
          ->name('api.notifications.unread');
