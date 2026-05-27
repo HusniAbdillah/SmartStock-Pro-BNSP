@@ -130,7 +130,12 @@
             <h4 style="font-size:14px; font-weight:500; color:#061B31;">Lokasi Gudang</h4>
             <p style="font-size:12px; color:#64748D; margin-top:2px;">{{ count($mapData) }} gudang aktif</p>
         </div>
-        <div id="warehouseMap" style="height:280px;"></div>
+        <div class="leaflet-map-host" style="height:280px;">
+            <div id="warehouseMap" style="width:100%;height:100%;min-height:280px;"></div>
+            @if(count($mapData) === 0)
+            <div class="leaflet-map-empty">Belum ada koordinat gudang. Tambahkan latitude/longitude di data gudang.</div>
+            @endif
+        </div>
     </div>
 
     {{-- Server monitor --}}
@@ -259,13 +264,7 @@
 @endsection
 
 @push('scripts')
-<script type="application/json" id="dashboard-data">@json([
-    'trendLabels'     => collect($trendData)->pluck('date')->values()->all(),
-    'trendMasuk'      => collect($trendData)->pluck('masuk')->values()->all(),
-    'trendKeluar'     => collect($trendData)->pluck('keluar')->values()->all(),
-    'warehouseStocks' => $warehouseStocks->map(fn($w) => ['name' => $w->name, 'total_stock' => $w->total_stock])->values()->all(),
-    'mapData'         => $mapData,
-])</script>
+<script type="application/json" id="dashboard-data">@json($dashboardData)</script>
 <script>
 (function () {
     const pd = JSON.parse(document.getElementById('dashboard-data').textContent);
@@ -357,33 +356,34 @@
         });
     }
 
-    // Leaflet map — check at runtime, no Blade conditionals in script
-    var mapDataArr = pd.mapData;
-    if (mapDataArr && mapDataArr.length > 0) {
-        var leafletMap = L.map('warehouseMap', { zoomControl: true, scrollWheelZoom: false });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '\u00a9 OpenStreetMap',
-            maxZoom: 18
-        }).addTo(leafletMap);
+    // Leaflet map (via SmartStockMaps helper)
+    SmartStockMaps.ready(function () {
+        var mapEl = document.getElementById('warehouseMap');
+        if (!mapEl) return;
 
+        var map = SmartStockMaps.createMap('warehouseMap', { scrollWheelZoom: false });
+        if (!map) return;
+
+        var mapDataArr = pd.mapData || [];
         var bounds = [];
-        mapDataArr.forEach(function(w) {
-            if (w.lat && w.lng) {
-                var icon = L.divIcon({
-                    html: '<div style="width:28px;height:28px;background:#533AFD;border:2px solid #FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(83,58,253,0.3);"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg></div>',
-                    className: '',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                });
-                var marker = L.marker([w.lat, w.lng], { icon: icon }).addTo(leafletMap);
-                marker.bindPopup('<div style="font-family:Inter,sans-serif;padding:4px;"><strong style="font-size:13px;color:#061B31;">' + w.name + '</strong><p style="font-size:12px;color:#64748D;margin:2px 0 0;">' + w.city + '</p></div>');
-                bounds.push([w.lat, w.lng]);
-            }
+        var icon = SmartStockMaps.warehouseIcon();
+
+        mapDataArr.forEach(function (w) {
+            var lat = parseFloat(w.lat);
+            var lng = parseFloat(w.lng);
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+            var marker = L.marker([lat, lng], { icon: icon }).addTo(map);
+            marker.bindPopup(
+                '<div style="font-family:Inter,sans-serif;padding:4px;">' +
+                '<strong style="font-size:13px;color:#061B31;">' + w.name + '</strong>' +
+                '<p style="font-size:12px;color:#64748D;margin:4px 0 0;">' + (w.city || '') + '</p></div>'
+            );
+            bounds.push([lat, lng]);
         });
-        if (bounds.length > 0) {
-            leafletMap.fitBounds(bounds, { padding: [32, 32] });
-        }
-    }
+
+        SmartStockMaps.fitView(map, bounds);
+    });
 })();
 
 // Server monitor Alpine component

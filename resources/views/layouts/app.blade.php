@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" />
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('head-scripts')
 </head>
@@ -19,26 +19,28 @@
 
         {{-- ── Sidebar ──────────────────────────────────────────── --}}
         <aside
-            class="fixed inset-y-0 left-0 z-50 flex flex-col"
-            style="background:#FFFFFF; border-right:1px solid #D4DEE9; box-shadow:0px 1px 2px rgba(0,0,0,0.04);"
-            :style="sidebarOpen ? 'width:240px' : 'width:64px'"
-            style="transition:width 200ms ease;"
+            class="app-sidebar fixed inset-y-0 left-0 z-50 flex flex-col"
+            :style="{ width: sidebarOpen ? '256px' : '64px' }"
         >
             {{-- Logo row --}}
-            <div class="flex items-center gap-3 px-4 overflow-hidden" style="height:64px; border-bottom:1px solid #E5EDF5; flex-shrink:0;">
-                <div class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded" style="background:#533AFD;">
-                    <svg class="w-4 h-4" style="color:#FFFFFF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7"/>
-                    </svg>
-                </div>
-                <div x-show="sidebarOpen" x-transition:enter="transition-opacity duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="overflow-hidden">
-                    <span style="font-size:16px; font-weight:600; color:#061B31; white-space:nowrap;">SmartStock <span style="color:#533AFD;">Pro</span></span>
-                    <p style="font-size:11px; color:#64748D; white-space:nowrap; margin-top:1px;">PT Maju Bersama Digital</p>
+            <div class="flex items-center gap-3 px-4 overflow-hidden" :class="sidebarOpen ? 'justify-start' : 'justify-center'" style="height:78px; border-bottom:1px solid rgba(255,255,255,0.14); flex-shrink:0;">
+                <img src="{{ asset('smartstockpro.png') }}"
+                     alt="SmartStock Pro"
+                     class="object-contain transition-all duration-200 ease-out"
+                     :style="sidebarOpen ? 'height:52px; width:52px;' : 'height:34px; width:34px;'">
+                <div x-show="sidebarOpen"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 -translate-x-2"
+                     x-transition:enter-end="opacity-100 translate-x-0"
+                     class="min-w-0">
+                    <p style="font-size:18px; line-height:1.1; font-weight:700; color:#FFFFFF; letter-spacing:0.01em; white-space:nowrap;">SmartStock Pro</p>
+                    <p style="font-size:12px; line-height:1.3; font-weight:500; color:rgba(232,240,255,0.9); white-space:nowrap;">PT Maju Bersama Digital</p>
                 </div>
             </div>
 
             {{-- Nav --}}
-            <nav class="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-0.5">
+            <nav class="flex-1 overflow-y-auto overflow-x-hidden py-5 px-3 space-y-0.5"
+                 style="scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.1) transparent;">
 
                 <a href="{{ route('dashboard') }}"
                    class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
@@ -151,12 +153,12 @@
             </nav>
 
             {{-- Collapse toggle --}}
-            <div class="p-3" style="border-top:1px solid #E5EDF5; flex-shrink:0;">
+            <div class="p-3" style="border-top:1px solid rgba(255,255,255,0.11); flex-shrink:0;">
                 <button @click="toggleSidebar()"
-                    class="w-full flex items-center justify-center p-2 rounded"
-                    style="background:transparent; border:none; color:#64748D; cursor:pointer; transition:background-color 120ms ease;"
-                    onmouseover="this.style.backgroundColor='#F8FAFC'; this.style.color='#061B31';"
-                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#64748D';">
+                    class="w-full flex items-center justify-center p-2 rounded-lg"
+                    style="background:transparent; border:none; color:#C6D6EE; cursor:pointer; transition:all 180ms ease;"
+                    onmouseover="this.style.backgroundColor='rgba(255,255,255,0.11)'; this.style.color='#FFFFFF';"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#C6D6EE';">
                     <svg x-show="sidebarOpen" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
                     </svg>
@@ -168,9 +170,8 @@
         </aside>
 
         {{-- ── Main column ──────────────────────────────────────── --}}
-        <div class="flex-1 flex flex-col min-h-screen"
-             :style="sidebarOpen ? 'padding-left:240px' : 'padding-left:64px'"
-             style="transition:padding-left 200ms ease;">
+        <div class="app-main-shell flex-1 flex flex-col min-h-screen"
+             :style="{ paddingLeft: sidebarOpen ? '256px' : '64px' }">
 
             {{-- Topbar --}}
             <header class="sticky top-0 z-40 flex items-center justify-between px-8"
@@ -345,10 +346,74 @@
     </div>
 
     {{-- External scripts --}}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <script>
+    /** Shared Leaflet helpers — wait for L + layout, then init maps reliably */
+    window.SmartStockMaps = {
+        ready: function (fn) {
+            function attempt() {
+                if (typeof L === 'undefined') {
+                    setTimeout(attempt, 40);
+                    return;
+                }
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', function () {
+                        requestAnimationFrame(fn);
+                    });
+                } else {
+                    requestAnimationFrame(fn);
+                }
+            }
+            attempt();
+        },
+        createMap: function (elementId, options) {
+            options = options || {};
+            var el = document.getElementById(elementId);
+            if (!el) return null;
+
+            var map = L.map(el, {
+                zoomControl: options.zoomControl !== false,
+                scrollWheelZoom: !!options.scrollWheelZoom,
+                dragging: options.dragging !== false,
+                attributionControl: true,
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 19,
+            }).addTo(map);
+
+            var delays = [0, 100, 350];
+            delays.forEach(function (ms) {
+                setTimeout(function () { map.invalidateSize(true); }, ms);
+            });
+
+            return map;
+        },
+        warehouseIcon: function () {
+            return L.divIcon({
+                html: '<div style="width:28px;height:28px;background:#533AFD;border:2px solid #FFFFFF;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(83,58,253,0.35);"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg></div>',
+                className: 'ss-map-marker',
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+                popupAnchor: [0, -28],
+            });
+        },
+        fitView: function (map, latLngs) {
+            if (!latLngs || latLngs.length === 0) {
+                map.setView([-2.548926, 118.0148634], 5);
+                return;
+            }
+            if (latLngs.length === 1) {
+                map.setView(latLngs[0], 12);
+                return;
+            }
+            map.fitBounds(L.latLngBounds(latLngs), { padding: [32, 32], maxZoom: 12 });
+        },
+    };
+
     function appShell() {
         return {
             sidebarOpen: localStorage.getItem('ss_sidebar') !== 'false',
