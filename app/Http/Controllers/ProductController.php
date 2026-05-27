@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessBatchImport;
 use App\Models\Category;
+use App\Models\InventoryTransaction;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Warehouse;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -94,39 +96,45 @@ class ProductController extends Controller
         // Auto-generate SKU if not provided
         $sku = $validated['sku'] ?: strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $validated['name']), 0, 6)) . '-' . strtoupper(\Illuminate\Support\Str::random(4)); // auto-gen
 
-        $product = Product::create([
-            'name'              => $validated['name'],
-            'sku'               => $sku,
-            'category_id'       => $validated['category_id'],
-            'supplier_id'       => $validated['supplier_id'] ?? null,
-            'description'       => $validated['description'] ?? null,
-            'price'             => $validated['price'],
-            'minimum_threshold' => $validated['minimum_threshold'],
-            'unit'              => $validated['unit'] ?? 'pcs',
-            'image_path'        => $imagePath,
-            'is_active'         => $request->boolean('is_active', true),
-        ]);
-
-        // Set initial stock for chosen warehouse
         $warehouseId  = $validated['warehouse_id'] ?? null;
         $initialStock = (int) ($validated['initial_stock'] ?? 0);
-        if ($warehouseId && $initialStock > 0) {
-            WarehouseStock::create([
-                'product_id'   => $product->id,
-                'warehouse_id' => $warehouseId,
-                'quantity'     => $initialStock,
+
+        // Wrap product creation + initial stock in one atomic transaction.
+        // If the InventoryTransaction insert fails, the WarehouseStock row rolls back too.
+        $product = DB::transaction(function () use ($validated, $sku, $imagePath, $warehouseId, $initialStock) {
+            $product = Product::create([
+                'name'              => $validated['name'],
+                'sku'               => $sku,
+                'category_id'       => $validated['category_id'],
+                'supplier_id'       => $validated['supplier_id'] ?? null,
+                'description'       => $validated['description'] ?? null,
+                'price'             => $validated['price'],
+                'minimum_threshold' => $validated['minimum_threshold'],
+                'unit'              => $validated['unit'] ?? 'pcs',
+                'image_path'        => $imagePath,
+                'is_active'         => true,
             ]);
-            // Log as Masuk transaction
-            \App\Models\InventoryTransaction::create([
-                'product_id'   => $product->id,
-                'warehouse_id' => $warehouseId,
-                'type'         => 'Masuk',
-                'quantity'     => $initialStock,
-                'operator_id'  => Auth::id(),
-                'notes'        => 'Stok awal produk',
-                'status'       => 'completed',
-            ]);
-        }
+
+            if ($warehouseId && $initialStock > 0) {
+                WarehouseStock::create([
+                    'product_id'   => $product->id,
+                    'warehouse_id' => $warehouseId,
+                    'quantity'     => $initialStock,
+                ]);
+
+                InventoryTransaction::create([
+                    'product_id'   => $product->id,
+                    'warehouse_id' => $warehouseId,
+                    'type'         => 'Masuk',
+                    'quantity'     => $initialStock,
+                    'operator_id'  => Auth::id(),
+                    'notes'        => 'Stok awal produk',
+                    'status'       => 'completed',
+                ]);
+            }
+
+            return $product;
+        });
 
         return redirect()->route('products.index')
             ->with('success', "Produk «{$product->name}» berhasil ditambahkan.");

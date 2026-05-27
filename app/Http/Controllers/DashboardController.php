@@ -45,17 +45,23 @@ class DashboardController extends Controller
             ]);
         }
 
-        // Stock per warehouse for donut chart — matches view: ->name, ->total_stock
+        // Stock per warehouse — used for the display table (Collection of stdClass)
         $warehouseStocks = Warehouse::where('is_active', true)
             ->withSum('stocks', 'quantity')
             ->get()
             ->map(function ($w) {
                 return (object) [
                     'name'        => $w->name,
-                    'city'        => $w->city,
+                    'city'        => $w->city ?? '',
                     'total_stock' => (int) ($w->stocks_sum_quantity ?? 0),
                 ];
             });
+
+        // Plain PHP array for JS chart (avoids ->map() inside @json() template)
+        $warehouseStocksChart = $warehouseStocks
+            ->map(fn($w) => ['name' => $w->name, 'total_stock' => $w->total_stock])
+            ->values()
+            ->all();
 
         // Map data: lat/lng + name + city for Leaflet
         $mapData = Warehouse::where('is_active', true)
@@ -70,6 +76,15 @@ class DashboardController extends Controller
             ])
             ->values()
             ->toArray();
+
+        // Single flat array for @json($dashboardData) — must come after all its dependencies
+        $dashboardData = [
+            'trendLabels'     => $trendData->pluck('date')->values()->all(),
+            'trendMasuk'      => $trendData->pluck('masuk')->values()->all(),
+            'trendKeluar'     => $trendData->pluck('keluar')->values()->all(),
+            'warehouseStocks' => $warehouseStocksChart,
+            'mapData'         => $mapData,
+        ];
 
         // Recent transactions
         $recentTransactions = InventoryTransaction::with(['product', 'warehouse', 'operator'])
@@ -89,6 +104,7 @@ class DashboardController extends Controller
             'todayTransactions',
             'trendData',
             'warehouseStocks',
+            'dashboardData',
             'mapData',
             'recentTransactions',
             'unresolvedErrors',

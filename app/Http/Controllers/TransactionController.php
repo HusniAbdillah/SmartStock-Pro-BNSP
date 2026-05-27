@@ -70,8 +70,9 @@ class TransactionController extends Controller
             'product_id'   => ['required', 'exists:products,id'],
             'warehouse_id' => ['required', 'exists:warehouses,id'],
             'type'         => ['required', 'in:Masuk,Keluar'],
-            'quantity'     => ['required', 'integer', 'min:1'],
+            'quantity'     => ['required', 'integer', 'min:1', 'max:1000000'],
             'supplier_id'  => ['nullable', 'exists:suppliers,id'],
+            'unit_price'   => ['nullable', 'numeric', 'min:0'],
             'notes'        => ['nullable', 'string', 'max:500'],
         ], [
             'product_id.required'   => 'Produk wajib dipilih.',

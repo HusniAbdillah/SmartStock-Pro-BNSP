@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class TransferController extends Controller
@@ -69,15 +70,30 @@ class TransferController extends Controller
             ]);
         }
 
-        // PARALLEL PROCESSING via DB::transaction — both warehouses updated atomically
+        // Both warehouse stock rows are mutated atomically.
+        // We lock the source row first (lockForUpdate) to prevent concurrent
+        // over-deduction races before decrementing.
         DB::transaction(function () use ($product, $srcId, $dstId, $qty, $validated) {
-            // Decrement source warehouse
-            WarehouseStock::where('product_id', $product->id)
+            // Re-read and lock source row inside the transaction to prevent concurrent over-deduction
+            $sourceRow = WarehouseStock::where('product_id', $product->id)
                 ->where('warehouse_id', $srcId)
-                ->decrement('quantity', $qty);
+                ->lockForUpdate()
+                ->first();
 
-            // Increment destination warehouse (create record if missing)
-            WarehouseStock::updateOrCreate(
+            // Re-validate stock inside the transaction with the locked row
+            if (!$sourceRow || $sourceRow->quantity < $qty) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Illuminate\Support\Facades\Validator::make([], []),
+                    back()->withInput()->withErrors([
+                        'quantity' => 'Stok di gudang asal tidak mencukupi (concurrent check gagal).',
+                    ])
+                );
+            }
+
+            $sourceRow->decrement('quantity', $qty);
+
+            // Ensure destination row exists, then increment atomically
+            WarehouseStock::firstOrCreate(
                 ['product_id' => $product->id, 'warehouse_id' => $dstId],
                 ['quantity'   => 0]
             );
