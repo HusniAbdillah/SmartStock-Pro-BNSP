@@ -18,28 +18,28 @@ class DatabaseSeeder extends Seeder
     {
         // Users
         $admin = User::create([
-            'name'     => 'Administrator',
+            'name'     => 'Admin',
             'email'    => 'admin@smartstock.id',
             'password' => Hash::make('password'),
             'role'     => 'Admin',
         ]);
 
         $manager = User::create([
-            'name'     => 'Budi Santoso',
+            'name'     => 'Manajer Gudang',
             'email'    => 'manager@smartstock.id',
             'password' => Hash::make('password'),
             'role'     => 'Manajer Gudang',
         ]);
 
         $staff = User::create([
-            'name'     => 'Dewi Rahayu',
+            'name'     => 'Staf Gudang',
             'email'    => 'staf@smartstock.id',
             'password' => Hash::make('password'),
             'role'     => 'Staf Gudang',
         ]);
 
         User::create([
-            'name'     => 'Viewer Laporan',
+            'name'     => 'Viewer',
             'email'    => 'viewer@smartstock.id',
             'password' => Hash::make('password'),
             'role'     => 'Viewer',

@@ -270,39 +270,95 @@
 
     /* ─── Navigation Sidebar ──────────────────────────────────── */
 
+    .app-sidebar {
+        background-color: #1F2A52;
+        background-image: linear-gradient(180deg, #25356B 0%, #21315F 55%, #1B294F 100%);
+        border-right: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 2px 0 10px rgba(15, 23, 42, 0.16);
+        transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .app-main-shell {
+        background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+        transition: padding-left 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── Leaflet maps ─────────────────────────────────────────── */
+    .leaflet-map-host {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        background: #E5EDF5;
+    }
+    .leaflet-map-host .leaflet-container {
+        width: 100%;
+        height: 100%;
+        font-family: inherit;
+        z-index: 1;
+    }
+    .leaflet-map-host .leaflet-tile-pane {
+        z-index: 1;
+    }
+    .leaflet-map-empty {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        text-align: center;
+        font-size: 13px;
+        color: #64748D;
+        background: #F1F5F9;
+        z-index: 0;
+        pointer-events: none;
+    }
+
     .sidebar-link {
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 8px 12px;
+        padding: 9px 11px 9px 9px;
         border-radius: 6px;
-        font-size: 14px;
-        font-weight: 400;
-        color: #50617A;
+        border-left: 2px solid transparent;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #E9F0FF;
         text-decoration: none;
-        transition: background-color 120ms ease, color 120ms ease;
+        transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
         white-space: nowrap;
         overflow: hidden;
     }
+    .sidebar-link svg {
+        color: #D0DCF4;
+        flex-shrink: 0;
+        transition: color 180ms ease;
+    }
     .sidebar-link:hover {
-        background-color: #F8FAFC;
-        color: #061B31;
+        background-color: rgba(255, 255, 255, 0.16);
+        color: #FFFFFF;
+        transform: translateX(3px);
     }
+    .sidebar-link:hover svg { color: #FFFFFF; }
     .sidebar-link.active {
-        background-color: #E8E9FF;
-        color: #533AFD;
-        font-weight: 500;
+        background: linear-gradient(90deg, rgba(83, 58, 253, 0.34) 0%, rgba(255, 97, 24, 0.24) 100%);
+        color: #FFFFFF;
+        font-weight: 600;
+        border-left-color: #FF6118;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
     }
-    .sidebar-link.active svg { color: #533AFD; }
+    .sidebar-link.active:hover { transform: none; }
+    .sidebar-link.active svg { color: #FFFFFF; }
 
     .sidebar-section {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
         text-transform: uppercase;
-        color: #B8CCDB;
-        padding: 0 12px;
-        margin: 20px 0 6px;
+        color: rgba(228, 238, 255, 0.72);
+        padding: 0 8px 0 11px;
+        margin: 18px 0 4px;
+        white-space: nowrap;
     }
 
     /* ─── Tables ──────────────────────────────────────────────── */
