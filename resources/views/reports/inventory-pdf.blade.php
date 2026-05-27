@@ -9,7 +9,7 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 9px;
-            color: #061B31;
+            color: #1E293B;
             background: #FFFFFF;
             line-height: 1.45;
         }
@@ -17,8 +17,7 @@
 
         /* ── Header bar ────────────────────────────────────────── */
         .header {
-            background: #25345F;
-            background: linear-gradient(135deg, #2F3E7A 0%, #25345F 60%, #1B294F 100%);
+            background-color: #25345F;
             color: #FFFFFF;
             padding: 14px 18px;
             border-radius: 6px;
@@ -61,10 +60,10 @@
             color: #FFFFFF;
             letter-spacing: -0.3px;
         }
-        .brand-name span { color: #FF6118; }
+        .brand-name span { color: #FFAA6E; }
         .brand-sub {
             font-size: 8px;
-            color: rgba(255,255,255,0.75);
+            color: #B0BDD8;
             margin-top: 2px;
         }
         .report-title {
@@ -77,36 +76,27 @@
         }
         .report-meta {
             font-size: 8px;
-            color: rgba(255,255,255,0.75);
+            color: #B0BDD8;
             line-height: 1.6;
-        }
-        .accent-dot {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background: #FF6118;
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-right: 4px;
         }
 
         /* ── KPI cards ─────────────────────────────────────────── */
         .kpi-row {
             display: table;
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 8px 0;
             margin-bottom: 14px;
         }
         .kpi-cell {
             display: table-cell;
-            width: 25%;
+            width: 24%;
+            padding-right: 8px;
         }
+        .kpi-cell:last-child { padding-right: 0; }
         .kpi-card {
             border: 1px solid #D4DEE9;
             border-radius: 5px;
             padding: 9px 12px;
-            background: #FFFFFF;
+            background: #F8FAFC;
         }
         .kpi-card.kpi-brand {
             background: #EEF2FF;
@@ -114,18 +104,18 @@
             border-left: 3px solid #533AFD;
         }
         .kpi-card.kpi-warning {
-            background: #FFF7ED;
-            border-color: #FED7AA;
+            background: #FFF3E8;
+            border-color: #FBD0A8;
             border-left: 3px solid #FF6118;
         }
         .kpi-card.kpi-danger {
-            background: #FEF2F2;
+            background: #FFF0F0;
             border-color: #FECACA;
             border-left: 3px solid #DC2626;
         }
         .kpi-card.kpi-success {
-            background: #F0FDF4;
-            border-color: #BBF7D0;
+            background: #EDFAF3;
+            border-color: #A7F3D0;
             border-left: 3px solid #10B981;
         }
         .kpi-label {
@@ -133,31 +123,30 @@
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: #64748D;
+            color: #5A6A85;
         }
         .kpi-value {
             font-size: 16px;
             font-weight: bold;
-            color: #061B31;
+            color: #1E293B;
             margin-top: 3px;
         }
-        .kpi-card.kpi-brand  .kpi-value { color: #533AFD; }
-        .kpi-card.kpi-warning .kpi-value { color: #C2410C; }
-        .kpi-card.kpi-danger .kpi-value  { color: #DC2626; }
-        .kpi-card.kpi-success .kpi-value { color: #065F46; }
+        .kpi-brand  .kpi-value { color: #4330D4; }
+        .kpi-warning .kpi-value { color: #C2410C; }
+        .kpi-danger .kpi-value  { color: #B91C1C; }
+        .kpi-success .kpi-value { color: #065F46; }
 
         /* ── Section headers ───────────────────────────────────── */
         .section-header {
-            background: #F1F5F9;
-            border-left: 3px solid #533AFD;
+            background: #EBF0F7;
+            border-left: 4px solid #533AFD;
             padding: 7px 10px;
-            font-size: 9.5px;
+            font-size: 9px;
             font-weight: 700;
-            color: #061B31;
-            letter-spacing: 0.02em;
+            color: #1E293B;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             margin-bottom: 0;
-            border-radius: 3px 3px 0 0;
         }
 
         /* ── Tables ────────────────────────────────────────────── */
@@ -170,10 +159,7 @@
         table.compact td,
         table.compact th { padding: 4px 7px; }
 
-        thead tr {
-            background: #25345F;
-            color: #FFFFFF;
-        }
+        thead tr { background-color: #25345F; }
         thead th {
             padding: 6px 8px;
             text-align: left;
@@ -181,18 +167,20 @@
             font-weight: 700;
             letter-spacing: 0.05em;
             text-transform: uppercase;
+            color: #FFFFFF;
         }
-        tbody tr:nth-child(even) { background: #F8FAFC; }
+        /* nth-child tidak didukung DomPDF, pakai class .row-alt di baris genap */
         tbody td {
             padding: 5px 8px;
-            border-bottom: 1px solid #E5EDF5;
+            border-bottom: 1px solid #DDE5F0;
             vertical-align: middle;
-            color: #061B31;
+            color: #1E293B;
         }
+        tbody tr.row-alt td { background: #F4F7FB; }
         tbody tr:last-child td { border-bottom: none; }
 
-        /* Row accent strips for critical/warning rows */
-        .row-danger td:first-child { border-left: 3px solid #DC2626; }
+        /* Row accent strips */
+        .row-danger  td:first-child { border-left: 3px solid #DC2626; }
         .row-warning td:first-child { border-left: 3px solid #FF6118; }
         .row-success td:first-child { border-left: 3px solid #10B981; }
 
@@ -278,7 +266,7 @@
                         @if($logoBase64)
                         <img src="data:image/png;base64,{{ $logoBase64 }}" alt="SmartStock Pro">
                         @else
-                        <div style="width:38px;height:38px;background:linear-gradient(135deg,#533AFD,#7B61FF);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <div style="width:38px;height:38px;background-color:#533AFD;border-radius:8px;text-align:center;padding-top:9px;">
                             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7"/></svg>
                         </div>
                         @endif
@@ -354,7 +342,7 @@
                 $whQty   = $stockSummary->where('warehouse_name', $wh->name)->sum('quantity');
                 $whValue = $stockSummary->where('warehouse_name', $wh->name)->sum('nilai');
             @endphp
-            <tr>
+            <tr class="{{ $loop->even ? 'row-alt' : '' }}">
                 <td class="font-bold">{{ $wh->name }}</td>
                 <td class="text-muted">{{ $wh->city }}</td>
                 <td class="text-right font-bold">{{ number_format($whQty) }}</td>
@@ -390,9 +378,10 @@
             @php
                 $isCritical = (int)$item->quantity === 0;
                 $isWarning  = !$isCritical && (int)$item->quantity <= (int)$item->minimum_threshold;
-                $rowClass   = $isCritical ? 'row-danger' : ($isWarning ? 'row-warning' : 'row-success');
+                $statusClass = $isCritical ? 'row-danger' : ($isWarning ? 'row-warning' : 'row-success');
+                $altClass    = $loop->even ? 'row-alt' : '';
             @endphp
-            <tr class="{{ $rowClass }}">
+            <tr class="{{ $statusClass }} {{ $altClass }}">
                 <td class="font-bold">{{ $item->product_name }}</td>
                 <td class="font-mono text-muted">{{ $item->sku }}</td>
                 <td class="text-muted">{{ $item->category_name }}</td>
@@ -432,7 +421,7 @@
         </thead>
         <tbody>
             @foreach($recentTransactions as $tx)
-            <tr>
+            <tr class="{{ $loop->even ? 'row-alt' : '' }}">
                 <td class="font-mono text-brand">{{ $tx->reference_number ?? '—' }}</td>
                 <td class="font-bold">{{ \Illuminate\Support\Str::limit($tx->product->name ?? '—', 28) }}</td>
                 <td class="text-muted">{{ $tx->warehouse->city ?? '—' }}</td>
@@ -462,7 +451,7 @@
         </div>
         <div class="footer-right">
             <div class="page-stamp">RESMI &amp; TERVERIFIKASI</div><br>
-            <span style="margin-top:4px;display:block;">{{ now()->format('d/m/Y H:i') }} WIB</span>
+            {{ now()->format('d/m/Y H:i') }} WIB
         </div>
     </div>
 
