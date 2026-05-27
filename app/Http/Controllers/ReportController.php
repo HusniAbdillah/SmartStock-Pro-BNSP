@@ -20,7 +20,7 @@ class ReportController extends Controller
 {
     public function index(): View
     {
-        // FIFO-style stock valuation: sum product values per warehouse
+        // Stock valuation: sum product values per warehouse using current product prices.
         $warehouseStats = Warehouse::where('is_active', true)
             ->withSum('stocks', 'quantity')
             ->get()
@@ -34,7 +34,7 @@ class ReportController extends Controller
         $totalValue = $warehouseStats->sum('total_value');
         $totalStock = $warehouseStats->sum('total_stock');
 
-        // Stock summary with FIFO per product (ordered by created_at)
+        // Stock summary per product using aggregate quantity and current product prices.
         $stockSummary = WarehouseStock::join('products', 'warehouse_stocks.product_id', '=', 'products.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->select(

@@ -22,7 +22,7 @@ class AuditLogController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('action', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%");
+                  ->orWhere('model_type', 'LIKE', "%{$search}%");
             });
         }
 

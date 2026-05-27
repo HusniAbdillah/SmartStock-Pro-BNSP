@@ -7,7 +7,7 @@
 | DATA | DETAIL INFORMASI |
 |:---|:---|
 | **Nama Lengkap** | Husni Abdillah |
-| **No. Registrasi / NIM** | G6401231097 
+| **NIM** | G6401231097 |
 | **Judul Studi Kasus** | PT Maju Bersama Digital - SmartStock Pro |
 | **Program Studi** | Ilmu Komputer |
 
@@ -27,7 +27,7 @@ Dokumen ini disusun sebagai bukti pemenuhan seluruh unit kompetensi dalam skema 
 | Chart | Chart.js 4.4.0 via CDN |
 | Map | Leaflet 1.9.4 + OpenStreetMap |
 | PDF | `barryvdh/laravel-dompdf` 3.1.2 |
-| Import | CSV background job `ProcessBatchImport`; package `maatwebsite/excel` 3.1.69 tersedia |
+| Import | CSV background job `ProcessBatchImport`; package `maatwebsite/excel` 3.1.69 tersedia sebagai dependency, tetapi flow import aktual memakai parser CSV native PHP |
 | Notification | Laravel database notification + polling `/api/notifications/unread` |
 | Server monitoring | `/api/server-resources` dan `/api/health` |
 
@@ -69,7 +69,7 @@ SmartStock Pro dibangun untuk menggantikan proses manual tersebut dengan aplikas
 | Transfer | Transfer antar gudang dengan `DB::transaction()` |
 | Alert | Stok minimum, database notification, error log |
 | Laporan | PDF sync dan async melalui queue |
-| Audit | Audit log operasi write |
+| Audit | Audit log untuk login/logout dan operasi perubahan data (write operation) |
 | API | Health, resource monitoring, notification |
 
 ### Di Luar Ruang Lingkup Aktual
@@ -104,8 +104,8 @@ Bukti implementasi: `app/Models/User.php`, `app/Http/Middleware/CheckRole.php`, 
 | Autentikasi | Login multi-level | Terpenuhi | `AuthController`, `CheckRole`, `User` |
 | Password | Hashing dan validasi kuat | Terpenuhi | `Hash::make()`, `Password::min(8)->letters()->numbers()` |
 | Keamanan | SQLi, XSS, CSRF | Terpenuhi | Eloquent, Blade escape, `@csrf`, validation |
-| Session | Timeout otomatis | Terpenuhi | `config/session.php`, `SESSION_LIFETIME=120` |
-| Audit | Catat aktivitas user | Terpenuhi | `AuditLogMiddleware`, `audit_logs` |
+| Session | Timeout otomatis | Terpenuhi | `config/session.php`, `SESSION_LIFETIME=30` |
+| Audit | Catat login/logout dan operasi perubahan data | Terpenuhi | `AuditLogMiddleware`, `audit_logs` |
 | Dashboard | Grafik stok dan tren transaksi | Terpenuhi | `DashboardController`, Chart.js |
 | Notification | Alert stok kritis | Terpenuhi via polling | `StockAlertService`, `LowStockNotification` |
 | Multimedia | Upload dan preview gambar | Terpenuhi | `ProductController`, `products/create.blade.php` |
@@ -138,7 +138,7 @@ Bukti implementasi: `app/Models/User.php`, `app/Http/Middleware/CheckRole.php`, 
 | J.620100.039.02 | Petunjuk Teknis Pelanggan | Bab 6 |
 | J.620100.030.02 | Pemrograman Multimedia | Upload/preview gambar produk |
 | J.620100.043.01 | Impact Analysis | Bab 5 |
-| J.620100.029.02 | Pemrograman Paralel | Queue job dan transaksi atomik |
+| J.620100.029.02 | Pemrograman Paralel | Asynchronous background job melalui queue dan transaksi database atomik |
 | J.620100.028.02 | Pemrograman Real Time | Polling notifikasi dan resource monitor |
 | J.620100.025.02 | Debugging | Error log, failed job, troubleshooting |
 | J.620100.038.01 | UAT | Skenario UAT Bab 6 |
@@ -210,11 +210,12 @@ MySQL 8 Database Server
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=smartstock_pro
+DB_DATABASE=smartstock
 DB_USERNAME=root
 DB_PASSWORD=
 
 SESSION_DRIVER=database
+SESSION_LIFETIME=30
 QUEUE_CONNECTION=database
 CACHE_STORE=database
 ```
@@ -274,7 +275,7 @@ users ──< error_logs.resolved_by
 | MySQL | 8.x | Database | ACID, indexing, familiar, sesuai implementasi uji |
 | Laravel Queue DB | Built-in | Background job | Cukup untuk prototype tanpa Redis |
 | DomPDF | 3.1.2 | Export PDF | Integrasi Laravel mudah |
-| Maatwebsite Excel | 3.1.69 | Dukungan spreadsheet | Tersedia untuk pengembangan import Excel |
+| Maatwebsite Excel | 3.1.69 | Dukungan spreadsheet | Tersedia sebagai dependency untuk pengembangan export/import Excel berikutnya; flow import saat ini memakai CSV native PHP |
 | Tailwind CSS | 3.4.19 | UI | Utility-first, responsif |
 | Vite | 6.4.2 | Build asset | Build modern |
 | Chart.js | 4.4.0 CDN | Grafik | Ringan dan cepat |
@@ -344,7 +345,7 @@ Target notifikasi: user aktif dengan role Admin dan Manajer Gudang.
 | XSS | Script injection | Blade escape `{{ }}`, validasi input, CSP header |
 | CSRF | Request palsu | `@csrf` pada form dan token pada PATCH fetch |
 | Brute force login | Akun dibobol | RateLimiter 5 attempt/menit per email+IP |
-| Session hijacking | Sesi dicuri | Session regenerate login, invalidate logout, http_only cookie |
+| Session hijacking | Sesi dicuri | Session regenerate saat login, invalidate saat logout, timeout 30 menit, http_only cookie |
 | Broken access control | Role bypass | `auth`, `role` middleware, `canModify()` |
 | Upload file berbahaya | Malware/script upload | Validasi `image`, mime jpg/jpeg/png/webp, max 2MB |
 | Error disclosure | Stack trace tampil | Exception disimpan ke `error_logs`, custom 403/404 |
@@ -360,7 +361,7 @@ X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
-Content-Security-Policy: default-src 'self'; ...
+Content-Security-Policy: default-src 'self'; script/style/font/img/connect source disesuaikan untuk CDN Chart.js, Leaflet, dan asset aplikasi
 ```
 
 ## 4.9 Analisis Skalabilitas
@@ -368,11 +369,11 @@ Content-Security-Policy: default-src 'self'; ...
 | Area | Implementasi Saat Ini | Peningkatan Jika Beban Naik |
 |---|---|---|
 | Database | MySQL + index FK/filter | Tambah composite index, read replica |
-| Queue | Database queue | Migrasi ke Redis queue bila job tinggi |
+| Queue | Database queue | Migrasi ke Redis queue bila volume job tinggi |
 | Dashboard | Query saat load | Cache KPI 1-5 menit |
 | File upload | Local storage | Object storage untuk multi-server |
-| PDF | Background job | Worker terpisah dengan Supervisor |
-| Web server | Single app server | Load balancer + horizontal scaling |
+| PDF | Background job | Worker terpisah dengan process manager seperti Supervisor |
+| Web server | Single app server | Load balancer dan horizontal scaling jika traffic meningkat |
 
 ---
 
@@ -386,7 +387,7 @@ Content-Security-Policy: default-src 'self'; ...
 | Sponsor | PT Maju Bersama Digital |
 | Asesi/Developer | Husni Abdillah |
 | Masalah | Spreadsheet manual, stok tidak sinkron, laporan lambat, tidak ada alert |
-| Tujuan | Website inventaris multi-gudang real-time berbasis polling |
+| Tujuan | Website inventaris multi-gudang dengan pembaruan berkala berbasis polling |
 | Deliverable | Prototype Laravel, database MySQL, dashboard, report PDF, import CSV, dokumentasi |
 | Batasan Waktu | 3 hari efektif / 18 jam |
 | Kriteria Sukses | Modul utama bisa didemokan dan dokumen memenuhi FR.IA.04A/04B |
@@ -513,7 +514,7 @@ Skenario: menambahkan export Excel tanpa mengganggu laporan PDF.
 ## 6.1 Instalasi Lokal dengan MySQL
 
 ```bash
-git clone <repository-url> SmartStock-Pro-BNSP
+git clone https://github.com/husni-abdillah/SmartStock-Pro-BNSP.git SmartStock-Pro-BNSP
 cd SmartStock-Pro-BNSP
 composer install
 npm install
@@ -527,12 +528,13 @@ Edit `.env`:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=smartstock_pro
+DB_DATABASE=smartstock
 DB_USERNAME=root
 DB_PASSWORD=
 
 QUEUE_CONNECTION=database
 SESSION_DRIVER=database
+SESSION_LIFETIME=30
 CACHE_STORE=database
 ```
 
@@ -554,6 +556,9 @@ php artisan queue:work
 | `manager@smartstock.id` | `password` | Manajer Gudang |
 | `staf@smartstock.id` | `password` | Staf Gudang |
 | `viewer@smartstock.id` | `password` | Viewer |
+
+> [!note]
+> Password demo sengaja dibuat sederhana untuk kebutuhan uji kompetensi. Pada pembuatan user baru, aplikasi tetap menerapkan validasi password minimal 8 karakter, mengandung huruf, dan mengandung angka melalui `Password::min(8)->letters()->numbers()`.
 
 ## 6.3 Panduan Fitur Utama
 
@@ -625,18 +630,21 @@ php artisan test
 
 | ID | Modul | Skenario | Expected Result | Status |
 |---|---|---|---|---|
-| UAT-01 | Auth | Login Admin | Masuk dashboard dan audit tercatat | Lulus |
-| UAT-02 | RBAC | Viewer akses `/users` | Ditolak 403 | Lulus |
-| UAT-03 | Produk | Tambah produk dengan gambar | Produk tersimpan, preview muncul | Lulus |
-| UAT-04 | Search | Cari SKU produk | Produk sesuai keyword muncul | Lulus |
-| UAT-05 | Transaksi | Barang masuk 10 unit | Stok bertambah 10 | Lulus |
-| UAT-06 | Transaksi | Barang keluar melebihi stok | Ditolak dengan pesan validasi | Lulus |
-| UAT-07 | Transfer | Transfer 5 unit antar gudang | Stok asal turun dan tujuan naik | Lulus |
-| UAT-08 | Alert | Stok turun sampai threshold | Error log dan notifikasi muncul | Lulus |
-| UAT-09 | Laporan | Export PDF | File PDF terunduh | Lulus |
-| UAT-10 | Import | Upload CSV valid | Produk diproses oleh queue | Lulus |
-| UAT-11 | Monitoring | Dashboard resource | CPU/memory/response time terupdate | Lulus |
-| UAT-12 | Debugging | Simulasi job gagal | `failed_jobs`/`error_logs` mencatat kegagalan | Lulus |
+| UAT-01 | Auth | Login Admin | Masuk dashboard dan audit tercatat | Simulasi Lulus |
+| UAT-02 | RBAC | Viewer akses `/users` | Ditolak 403 | Simulasi Lulus |
+| UAT-03 | Produk | Tambah produk dengan gambar | Produk tersimpan, preview muncul | Simulasi Lulus |
+| UAT-04 | Search | Cari SKU produk | Produk sesuai keyword muncul | Simulasi Lulus |
+| UAT-05 | Transaksi | Barang masuk 10 unit | Stok bertambah 10 | Simulasi Lulus |
+| UAT-06 | Transaksi | Barang keluar melebihi stok | Ditolak dengan pesan validasi | Simulasi Lulus |
+| UAT-07 | Transfer | Transfer 5 unit antar gudang | Stok asal turun dan tujuan naik | Simulasi Lulus |
+| UAT-08 | Alert | Stok turun sampai threshold | Error log dan notifikasi muncul | Simulasi Lulus |
+| UAT-09 | Laporan | Export PDF | File PDF terunduh | Simulasi Lulus |
+| UAT-10 | Import | Upload CSV valid | Produk diproses oleh queue | Simulasi Lulus |
+| UAT-11 | Monitoring | Dashboard resource | CPU/memory/response time terupdate | Simulasi Lulus |
+| UAT-12 | Debugging | Simulasi job gagal | `failed_jobs`/`error_logs` mencatat kegagalan | Simulasi Lulus |
+
+> [!note]
+> Status UAT di atas adalah hasil simulasi demonstrasi lokal. Untuk lingkungan pelanggan, tabel ini perlu ditandatangani perwakilan gudang/manajemen sebagai bukti persetujuan pengguna.
 
 ## 6.7 FAQ
 
