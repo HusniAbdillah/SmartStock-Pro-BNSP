@@ -1,66 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <img src="public/smartstockpro.png" alt="SmartStock Pro" height="100">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+  # SmartStock Pro
 
-## About Laravel
+  Sistem Manajemen Inventaris berbasis web untuk **PT Maju Bersama Digital**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+  [![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+  [![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+  [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+  [![Alpine.js](https://img.shields.io/badge/Alpine.js-3-8BC0D0?style=flat-square&logo=alpinedotjs&logoColor=white)](https://alpinejs.dev)
+  [![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
+  [![License](https://img.shields.io/badge/Lisensi-MIT-green?style=flat-square)](LICENSE)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+  Repositori ini dapat diakses di [github.com/HusniAbdillah/SmartStock-Pro-BNSP](https://github.com/HusniAbdillah/SmartStock-Pro-BNSP)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+  > Dikembangkan untuk memenuhi prasyarat **Sertifikasi BNSP Skema Web Developer**
+</div>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Tentang Aplikasi
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+SmartStock Pro adalah platform manajemen inventaris multi-gudang yang dirancang untuk membantu **PT Maju Bersama Digital** dalam memantau stok produk secara real-time, mengelola transaksi gudang, serta menghasilkan laporan inventaris yang komprehensif.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Fitur unggulan:**
+- Dashboard analitik dengan grafik & peta lokasi gudang interaktif
+- Manajemen produk, kategori, dan supplier
+- Transaksi stok masuk / keluar / transfer antar gudang
+- Ekspor laporan inventaris ke PDF
+- Impor data produk via Excel
+- Sistem audit log & notifikasi
+- Manajemen pengguna dengan 4 level hak akses
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Prasyarat
 
-### Premium Partners
+| Kebutuhan | Versi |
+|-----------|-------|
+| PHP | 8.2+ |
+| Composer | 2.x |
+| Node.js | 18.x |
+| MySQL | 8.0 |
+| Ekstensi PHP | `gd`, `pdo_mysql`, `mbstring`, `zip`, `bcmath` |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## Instalasi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**1. Clone repositori**
 
-## Code of Conduct
+```bash
+git clone https://github.com/HusniAbdillah/SmartStock-Pro-BNSP.git
+cd SmartStock-Pro-BNSP
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**2. Install dependensi**
 
-## Security Vulnerabilities
+```bash
+composer install
+npm install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**3. Konfigurasi environment**
 
-## License
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Sesuaikan koneksi database di file `.env`:
+
+```env
+DB_DATABASE=smartstock
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+**4. Migrasi & seeder database**
+
+```bash
+php artisan migrate --seed
+```
+
+**5. Build aset frontend**
+
+```bash
+# Produksi
+npm run build
+
+# Pengembangan (hot-reload)
+npm run dev
+```
+
+**6. Jalankan aplikasi**
+
+```bash
+php artisan serve
+```
+
+Buka `http://localhost:8000` di browser.
+
+**7. Queue worker** *(opsional — untuk ekspor laporan PDF besar)*
+
+```bash
+php artisan queue:work --tries=2
+```
+
+---
+
+## Akun Demo
+
+| Peran | Email | Password |
+|-------|-------|----------|
+| Administrator | admin@smartstock.id | password |
+| Manajer Gudang | manajer@smartstock.id | password |
+| Staf Gudang | staf@smartstock.id | password |
+| Viewer | viewer@smartstock.id | password |
+
+---
+
+## Stack Teknologi
+
+| Lapisan | Teknologi |
+|---------|-----------|
+| Backend | Laravel 11, PHP 8.2 |
+| Frontend | Tailwind CSS 3, Alpine.js 3, Vite |
+| Database | MySQL 8.0 |
+| PDF | DomPDF (barryvdh/laravel-dompdf) |
+| Excel | Maatwebsite Excel |
+| Peta | Leaflet.js + OpenStreetMap |
+| Grafik | Chart.js 4 |
+| Autentikasi | Laravel Breeze (session-based) |
+
+---
+
+
