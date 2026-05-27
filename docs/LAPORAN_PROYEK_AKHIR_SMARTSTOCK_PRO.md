@@ -10,6 +10,7 @@
 | **NIM** | G6401231097 |
 | **Judul Studi Kasus** | PT Maju Bersama Digital - SmartStock Pro |
 | **Program Studi** | Ilmu Komputer |
+| **Repository GitHub** | [https://github.com/HusniAbdillah/SmartStock-Pro-BNSP](https://github.com/HusniAbdillah/SmartStock-Pro-BNSP) |
 
 ---
 
