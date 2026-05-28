@@ -8,8 +8,8 @@
 |:---|:---|
 | **Nama Lengkap** | Husni Abdillah |
 | **NIM** | G6401231097 |
-| **Judul Studi Kasus** | PT Maju Bersama Digital - SmartStock Pro |
 | **Program Studi** | Ilmu Komputer |
+| **Judul Studi Kasus** | PT Maju Bersama Digital - SmartStock Pro |
 | **Repository GitHub** | [https://github.com/HusniAbdillah/SmartStock-Pro-BNSP](https://github.com/HusniAbdillah/SmartStock-Pro-BNSP) |
 
 ---

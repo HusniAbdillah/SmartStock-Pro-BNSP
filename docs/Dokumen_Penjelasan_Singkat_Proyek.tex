@@ -1,0 +1,1286 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{newunicodechar}
+\newunicodechar{│}{|}
+\newunicodechar{▼}{v}
+\newunicodechar{├}{+}
+\newunicodechar{└}{+}
+\newunicodechar{─}{-}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\hbadness=10000
+\hfuzz=500pt
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+% Keep paragraph settings explicit to avoid longtable/parskip glue issues.
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\setlength{\tabcolsep}{3pt}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\AtBeginEnvironment{longtable}{\small}
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\section{DOKUMEN PENJELASAN SINGKAT
+PROYEK}\label{dokumen-penjelasan-singkat-proyek}
+
+\subsection{Sistem Manajemen Inventaris Multi-Gudang: "SmartStock
+Pro"}\label{sistem-manajemen-inventaris-multi-gudang-smartstock-pro}
+
+\subsubsection{Skema Sertifikasi: Web
+Developer}\label{skema-sertifikasi-web-developer}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{longtable}[]{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule\noalign{}
+DATA & DETAIL INFORMASI \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Nama Lengkap} & Husni Abdillah \\
+\textbf{NIM} & G6401231097 \\
+\textbf{Program Studi} & Ilmu Komputer \\
+\textbf{Judul Studi Kasus} & PT Maju Bersama Digital - SmartStock Pro \\
+\textbf{Repository GitHub} &
+\href{https://github.com/HusniAbdillah/SmartStock-Pro-BNSP}{\url{https://github.com/HusniAbdillah/SmartStock-Pro-BNSP}} \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. PENDAHULUAN \& LATAR
+BELAKANG}\label{1-pendahuluan--latar-belakang}
+
+Dokumen ini disusun sebagai bukti pemenuhan seluruh unit kompetensi
+dalam skema Web Developer. \textbf{SmartStock Pro} dirancang untuk
+mendigitalisasi pengelolaan stok di 5 gudang PT Maju Bersama Digital
+yang sebelumnya manual, guna meminimalisir kesalahan data dan
+mempercepat proses transfer barang.
+
+\subsection{Ringkasan Implementasi
+Aktual}\label{ringkasan-implementasi-aktual}
+
+\begin{itemize}
+\item Backend: Laravel Framework 11.54.0, PHP 8.2+
+\item Database: MySQL 8.x (\texttt{DB\_CONNECTION=mysql})
+\item Queue: Laravel Queue database driver (\texttt{jobs},
+  \texttt{failed\_jobs}, \texttt{job\_batches})
+\item Frontend: Blade, Tailwind CSS 3.4.19, Vite 6.4.2
+\item Chart: Chart.js 4.4.0 via CDN
+\item Map: Leaflet 1.9.4 + OpenStreetMap
+\item PDF: \texttt{barryvdh/laravel-dompdf} 3.1.2
+\item Import: CSV background job \texttt{ProcessBatchImport}; package
+  \texttt{maatwebsite/excel} 3.1.69 tersedia sebagai dependency, tetapi flow
+  import aktual memakai parser CSV native PHP
+\item Notification: Laravel database notification + polling
+  \texttt{/api/notifications/unread}
+\item Server monitoring: \texttt{/api/server-resources} dan
+  \texttt{/api/health}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 1 - Pendahuluan}\label{bab-1---pendahuluan}
+
+\subsection{1.1 Latar Belakang}\label{11-latar-belakang}
+
+PT Maju Bersama Digital adalah perusahaan distribusi barang elektronik
+yang mengelola 5 gudang di Jakarta, Surabaya, Bandung, Medan, dan
+Makassar. Pengelolaan inventaris lama menggunakan spreadsheet
+menyebabkan data stok tidak sinkron, transfer barang lambat, laporan
+stok membutuhkan 2-3 hari, tidak ada alert stok minimum, dan manajemen
+tidak memiliki monitoring inventaris real-time.
+
+SmartStock Pro dibangun untuk menggantikan proses manual tersebut dengan
+aplikasi web terpusat berbasis Laravel. Sistem menyediakan pengelolaan
+produk, kategori, gudang, supplier, transaksi masuk/keluar, transfer
+antar gudang, notifikasi stok minimum, audit log, error log, upload
+gambar produk, import CSV, export PDF, dashboard grafik, peta gudang,
+dan monitoring resource server.
+
+\subsection{1.2 Tujuan Proyek}\label{12-tujuan-proyek}
+
+\begin{longtable}[]{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule\noalign{}
+No & Tujuan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Mengubah pencatatan inventaris spreadsheet menjadi sistem web
+terpusat \\
+2 & Menyediakan dashboard inventaris dengan grafik, peta, dan monitoring
+resource \\
+3 & Menyediakan CRUD data utama: produk, kategori, gudang, supplier,
+transaksi, user \\
+4 & Menyediakan transfer stok antar gudang secara atomik \\
+5 & Menyediakan alert stok minimum dan error log aplikasi \\
+6 & Menyediakan dokumentasi teknis, UAT, cutover, migrasi, dan
+troubleshooting \\
+\end{longtable}
+
+\subsection{1.3 Ruang Lingkup}\label{13-ruang-lingkup}
+
+\subsubsection{Dalam Ruang Lingkup}\label{dalam-ruang-lingkup}
+
+\begin{longtable}[]{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule\noalign{}
+Modul & Cakupan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Autentikasi & Login, logout, rate limiting, session regeneration \\
+Otorisasi & Role Admin, Manajer Gudang, Staf Gudang, Viewer \\
+Dashboard & KPI, Chart.js, Leaflet map, resource monitor \\
+Produk & CRUD, upload/preview gambar, search, filter, sort, pagination,
+import CSV \\
+Kategori & CRUD kategori produk \\
+Gudang & CRUD gudang dan koordinat GPS \\
+Supplier & CRUD supplier \\
+Transaksi & Barang masuk dan keluar \\
+Transfer & Transfer antar gudang dengan \texttt{DB::transaction()} \\
+Alert & Stok minimum, database notification, error log \\
+Laporan & PDF sync dan async melalui queue \\
+Audit & Audit log untuk login/logout dan operasi perubahan data (write
+operation) \\
+API & Health, resource monitoring, notification \\
+\end{longtable}
+
+\subsubsection{Di Luar Ruang Lingkup
+Aktual}\label{di-luar-ruang-lingkup-aktual}
+
+\begin{longtable}[]{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule\noalign{}
+Item & Status \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+PostgreSQL & Tidak digunakan pada implementasi uji ini \\
+Redis/Celery & Tidak digunakan; queue memakai database driver \\
+WebSocket & Tidak digunakan; real-time menggunakan polling berkala \\
+Email alert & Tidak digunakan; notifikasi berbasis database/in-app \\
+FIFO cost-layer penuh & Belum ada tabel batch biaya; sistem memakai
+saldo stok per gudang dan riwayat transaksi kronologis \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 2 - Analisis Kebutuhan dan Kesesuaian
+BNSP}\label{bab-2---analisis-kebutuhan-dan-kesesuaian-bnsp}
+
+\subsection{2.1 Role Pengguna}\label{21-role-pengguna}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Role & Deskripsi & Hak Akses Aktual \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Admin & Administrator sistem & Semua modul, audit log, user
+management \\
+Manajer Gudang & Pengelola operasional gudang & Dashboard, transaksi,
+transfer, laporan, error log \\
+Staf Gudang & Operator gudang & Input transaksi, transfer, lihat data
+operasional \\
+Viewer & Pengguna baca saja & Melihat data tanpa membuat perubahan \\
+\end{longtable}
+
+Bukti implementasi: \texttt{app/Models/User.php},
+\texttt{app/Http/Middleware/CheckRole.php}, dan route group di
+\texttt{routes/web.php}.
+
+\subsection{2.2 Kebutuhan Fungsional dan Status
+Implementasi}\label{22-kebutuhan-fungsional-dan-status-implementasi}
+
+\begin{longtable}[]{@{}P{0.15\textwidth}P{0.22\textwidth}P{0.18\textwidth}P{0.39\textwidth}@{}}
+\toprule\noalign{}
+Modul Studi Kasus & Kebutuhan & Status & Bukti Repo \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Autentikasi & Login multi-level & Terpenuhi & \texttt{AuthController},
+\texttt{CheckRole}, \texttt{User} \\
+Password & Hashing dan validasi kuat & Terpenuhi &
+\texttt{Hash::make()},
+\texttt{Password::min(8)-\textgreater{}\allowbreak letters()-\textgreater{}\allowbreak numbers()} \\
+Keamanan & SQLi, XSS, CSRF & Terpenuhi & Eloquent, Blade escape,
+\texttt{@csrf}, validation \\
+Session & Timeout otomatis & Terpenuhi & \texttt{config/session.php},
+\texttt{SESSION\_LIFETIME=30} \\
+Audit & Catat login/logout dan operasi perubahan data & Terpenuhi &
+\texttt{AuditLogMiddleware}, \texttt{audit\_logs} \\
+Dashboard & Grafik stok dan tren transaksi & Terpenuhi &
+\texttt{DashboardController}, Chart.js \\
+Notification & Alert stok kritis & Terpenuhi via polling &
+\texttt{StockAlertService}, \texttt{LowStockNotification} \\
+Multimedia & Upload dan preview gambar & Terpenuhi &
+\texttt{ProductController}, \texttt{products/create.blade.php} \\
+Peta & Lokasi gudang interaktif & Terpenuhi & Leaflet di dashboard \\
+Monitoring & CPU, memory, response time & Terpenuhi &
+\texttt{ServerResourceController} \\
+PDF & Export laporan & Terpenuhi & \texttt{ReportController},
+\texttt{inventory-pdf.blade.php} \\
+CRUD & Produk, kategori, gudang, supplier, transaksi & Terpenuhi &
+Resource routes dan controllers \\
+SQL & Query SQL/join/agregasi & Terpenuhi & \texttt{DB::raw}, join,
+\texttt{DATE\_FORMAT()} \\
+Search & Algoritma pencarian produk & Terpenuhi &
+\texttt{Product::scopeSearch()} \\
+Stok otomatis & Masuk/keluar/transfer & Terpenuhi &
+\texttt{TransactionController}, \texttt{TransferController} \\
+Queue & Import CSV dan laporan besar & Terpenuhi &
+\texttt{ProcessBatchImport}, \texttt{GenerateLargeReport} \\
+Error log & Exception dan severity & Terpenuhi &
+\texttt{bootstrap/app.php}, \texttt{ErrorLog} \\
+\end{longtable}
+
+\subsection{2.3 Matriks Unit
+Kompetensi}\label{23-matriks-unit-kompetensi}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Kode Unit & Judul Unit & Bukti Pemenuhan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+J.62090.018.01 & Mengelola Risiko Keamanan Informasi & Risiko
+SQLi/XSS/CSRF, rate limit, audit, security headers \\
+TIK.SM03.001.01 & Menentukan Arsitektur Perangkat Keras & Topologi dan
+spesifikasi server Bab 3 \\
+J.620100.001.01 & Menganalisis Tools & Tabel tools dan framework Bab
+4 \\
+J.620100.002.01 & Menganalisis Skalabilitas Perangkat Lunak & Indexing,
+queue, cache plan, scale-up \\
+J.620100.022.02 & Algoritma Pemrograman & Search, mutasi stok, alert
+threshold \\
+J.620100.041.01 & Cutover Aplikasi & Cutover plan Bab 5 \\
+J.620100.045.01 & Pemantauan Resource &
+\texttt{/api/server-resources} \\
+J.620100.020.02 & Menggunakan SQL & Join, agregasi, \texttt{DB::raw},
+\texttt{DATE\_FORMAT} \\
+J.620100.044.01 & Alert Notification & Low stock notification dan error
+log \\
+J.620100.003.01 & Identifikasi Library/Framework & Composer/npm
+dependency matrix \\
+J.620100.024.02 & Migrasi Teknologi Baru & Spreadsheet/CSV ke MySQL \\
+J.620100.047.01 & Pembaharuan Perangkat Lunak & Git update scenario dan
+change log \\
+J.620100.039.02 & Petunjuk Teknis Pelanggan & Bab 6 \\
+J.620100.030.02 & Pemrograman Multimedia & Upload/preview gambar
+produk \\
+J.620100.043.01 & Impact Analysis & Bab 5 \\
+J.620100.029.02 & Pemrograman Paralel & Asynchronous background job
+melalui queue dan transaksi database atomik \\
+J.620100.028.02 & Pemrograman Real Time & Polling notifikasi dan
+resource monitor \\
+J.620100.025.02 & Debugging & Error log, failed job, troubleshooting \\
+J.620100.038.01 & UAT & Skenario UAT Bab 6 \\
+M.702090.001.01 & Integration Management & Project charter, cutover,
+change control \\
+M.702090.005.01 & Quality Management & Quality checklist dan UAT \\
+M.702090.002.01 & Scope Management & Scope, WBS, impact analysis \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 3 - Arsitektur Sistem dan Basis
+Data}\label{bab-3---arsitektur-sistem-dan-basis-data}
+
+\subsection{3.1 Arsitektur Logis}\label{31-arsitektur-logis}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Browser User}
+\NormalTok{  │}
+\NormalTok{  ▼}
+\NormalTok{Presentation Layer}
+\NormalTok{Blade + Tailwind CSS + Chart.js + Leaflet + JavaScript polling}
+\NormalTok{  │}
+\NormalTok{  ▼}
+\NormalTok{Application Layer}
+\NormalTok{Laravel 11 MVC: Controller, Model, View, Middleware, Service, Job, Notification}
+\NormalTok{  │}
+\NormalTok{  ├── Auth + RBAC}
+\NormalTok{  ├── AuditLogMiddleware + SecurityHeaders}
+\NormalTok{  ├── StockAlertService}
+\NormalTok{  ├── ProcessBatchImport Job}
+\NormalTok{  └── GenerateLargeReport Job}
+\NormalTok{  │}
+\NormalTok{  ▼}
+\NormalTok{Data Layer}
+\NormalTok{MySQL 8.x: products, warehouses, warehouse\_stocks, transactions, users, sessions,}
+\NormalTok{jobs, notifications, audit\_logs, error\_logs}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{3.2 Topologi Server}\label{32-topologi-server}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Internet / LAN Gudang}
+\NormalTok{  │}
+\NormalTok{  ▼}
+\NormalTok{Nginx Web Server}
+\NormalTok{  │}
+\NormalTok{  ├── PHP{-}FPM / Laravel Application}
+\NormalTok{  ├── Queue Worker: php artisan queue:work database}
+\NormalTok{  └── Public Storage: product images and generated PDFs}
+\NormalTok{  │}
+\NormalTok{  ▼}
+\NormalTok{MySQL 8 Database Server}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{3.3 Spesifikasi Minimum
+Hardware}\label{33-spesifikasi-minimum-hardware}
+
+\begin{longtable}[]{@{}P{0.15\textwidth}P{0.22\textwidth}P{0.18\textwidth}P{0.39\textwidth}@{}}
+\toprule\noalign{}
+Komponen & Minimum & Rekomendasi & Justifikasi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Web/App CPU & 2 vCPU & 4 vCPU & PHP-FPM, Laravel request, PDF ringan \\
+Web/App RAM & 4 GB & 8 GB & Laravel app, queue worker, cache \\
+Web/App Storage & 40 GB SSD & 80 GB SSD & Source code, log, uploads,
+PDF \\
+DB CPU & 2 vCPU & 4 vCPU & Query join/agregasi laporan \\
+DB RAM & 4 GB & 8 GB & MySQL buffer pool dan index \\
+DB Storage & 80 GB SSD & 150 GB SSD NVMe & Data transaksi, audit log,
+error log \\
+Bandwidth & 20 Mbps & 50 Mbps & Akses 5 gudang dan download PDF \\
+OS & Ubuntu Server 22.04 LTS & Ubuntu Server 24.04 LTS & Stabil untuk
+Nginx, PHP, MySQL \\
+\end{longtable}
+
+\subsection{3.4 Konfigurasi Database
+MySQL}\label{34-konfigurasi-database-mysql}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DB\_CONNECTION=mysql}
+\NormalTok{DB\_HOST=127.0.0.1}
+\NormalTok{DB\_PORT=3306}
+\NormalTok{DB\_DATABASE=smartstock}
+\NormalTok{DB\_USERNAME=root}
+\NormalTok{DB\_PASSWORD=}
+
+\NormalTok{SESSION\_DRIVER=database}
+\NormalTok{SESSION\_LIFETIME=30}
+\NormalTok{QUEUE\_CONNECTION=database}
+\NormalTok{CACHE\_STORE=database}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{3.5 Desain Tabel}\label{35-desain-tabel}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Tabel & Fungsi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{users} & Data pengguna dan role \\
+\texttt{sessions} & Session database driver \\
+\texttt{categories} & Kategori produk \\
+\texttt{suppliers} & Data pemasok \\
+\texttt{warehouses} & Data gudang dan koordinat GPS \\
+\texttt{products} & Master produk, SKU, harga, threshold, gambar \\
+\texttt{warehouse\_stocks} & Saldo stok per produk per gudang \\
+\texttt{inventory\_transactions} & Mutasi masuk, keluar, transfer \\
+\texttt{audit\_logs} & Audit operasi pengguna \\
+\texttt{error\_logs} & Error dan alert severity \\
+\texttt{notifications} & In-app database notification \\
+\texttt{jobs}, \texttt{failed\_jobs}, \texttt{job\_batches} & Laravel
+database queue \\
+\end{longtable}
+
+\subsection{3.6 ERD Ringkas}\label{36-erd-ringkas}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{users ──\textless{} inventory\_transactions \textgreater{}── products \textgreater{}── categories}
+\NormalTok{  │                                  │}
+\NormalTok{  └──\textless{} audit\_logs                    └── suppliers}
+
+\NormalTok{products ──\textless{} warehouse\_stocks \textgreater{}── warehouses}
+\NormalTok{warehouses ──\textless{} inventory\_transactions}
+\NormalTok{users ──\textless{} notifications}
+\NormalTok{users ──\textless{} error\_logs.resolved\_by}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{3.7 Indexing dan
+Skalabilitas}\label{37-indexing-dan-skalabilitas}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Tabel & Index & Manfaat \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{products} & \texttt{sku}, \texttt{category\_id,is\_active} &
+Search/filter produk \\
+\texttt{warehouse\_stocks} & unique \texttt{product\_id,warehouse\_id} &
+Lookup stok gudang \\
+\texttt{inventory\_\allowbreak transactions} & \texttt{product\_id,\allowbreak warehouse\_id} &
+Riwayat produk/gudang \\
+\texttt{inventory\_\allowbreak transactions} & \texttt{type,\allowbreak created\_at} & Grafik
+dan filter transaksi \\
+\texttt{audit\_logs} & \texttt{user\_id,created\_at} & Audit user \\
+\texttt{error\_logs} & \texttt{severity,is\_resolved} & Dashboard
+error \\
+\texttt{jobs} & \texttt{queue} & Queue worker \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 4 - Implementasi Teknis, Tools, Algoritma, dan
+Keamanan}\label{bab-4---implementasi-teknis-tools-algoritma-dan-keamanan}
+
+\subsection{4.1 Tools dan Framework}\label{41-tools-dan-framework}
+
+\begin{longtable}[]{@{}P{0.12\textwidth}C{0.08\textwidth}P{0.18\textwidth}P{0.56\textwidth}@{}}
+\toprule\noalign{}
+Komponen & Versi Aktual & Fungsi & Alasan Pemilihan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Laravel & 11.54.0 & Backend MVC & Routing, ORM, validation, auth, queue,
+notification \\
+PHP & \^{}8.2 & Runtime & Stabil dan didukung Laravel 11 \\
+MySQL & 8.x & Database & ACID, indexing, familiar, sesuai implementasi
+uji \\
+Laravel Queue DB & Built-in & Background job & Cukup untuk prototype
+tanpa Redis \\
+DomPDF & 3.1.2 & Export PDF & Integrasi Laravel mudah \\
+Maatwebsite Excel & 3.1.69 & Dukungan spreadsheet & Tersedia sebagai
+dependency untuk pengembangan export/import Excel berikutnya; flow
+import saat ini memakai CSV native PHP \\
+Tailwind CSS & 3.4.19 & UI & Utility-first, responsif \\
+Vite & 6.4.2 & Build asset & Build modern \\
+Chart.js & 4.4.0 CDN & Grafik & Ringan dan cepat \\
+Leaflet & 1.9.4 CDN & Peta gudang & Open-source dan gratis \\
+\end{longtable}
+
+\subsection{4.2 Algoritma Search
+Produk}\label{42-algoritma-search-produk}
+
+Pencarian produk diimplementasikan pada \texttt{Product::scopeSearch()}
+dengan pencarian \texttt{LIKE} pada nama, SKU, dan deskripsi. Query
+dikombinasikan dengan filter kategori, filter stok rendah, sorting
+whitelist, dan pagination 15 data per halaman.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Input keyword}
+\NormalTok{  ├─ where name LIKE keyword}
+\NormalTok{  ├─ orWhere sku LIKE keyword}
+\NormalTok{  └─ orWhere description LIKE keyword}
+\NormalTok{Apply filters, sort whitelist, paginate}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{4.3 Algoritma Stok
+Otomatis}\label{43-algoritma-stok-otomatis}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Operasi & Algoritma \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Masuk & Validasi input, \texttt{updateOrCreate} stok gudang,
+\texttt{increment}, catat transaksi \\
+Keluar & Cek stok cukup, \texttt{decrement}, catat transaksi \\
+Transfer & Cek stok asal, \texttt{DB::transaction()}, decrement asal,
+increment tujuan, catat transaksi transfer \\
+Alert & Setelah mutasi stok, jalankan
+\texttt{StockAlertService::checkAndAlert()} \\
+\end{longtable}
+
+\subsection{4.4 SQL Aktual}\label{44-sql-aktual}
+
+Contoh pemakaian SQL/query builder:
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+File & Implementasi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{ReportController} & Join \texttt{warehouse\_stocks},
+\texttt{products}, \texttt{categories}, \texttt{warehouses} \\
+\texttt{ReportController} &
+\texttt{DB::raw(\textquotesingle{}SUM(...)\textquotesingle{})},
+\texttt{DATE\_FORMAT(created\_at,\ \textquotesingle{}\%Y-\%m\textquotesingle{})} \\
+\texttt{ProductController} & \texttt{whereRaw()} filter stok minimum \\
+\texttt{Warehouse} model & Join dan sum nilai stok \\
+\texttt{GenerateLargeReport} & Query laporan PDF besar \\
+\end{longtable}
+
+\subsection{4.5 Real-Time dan
+Monitoring}\label{45-real-time-dan-monitoring}
+
+\begin{longtable}[]{@{}P{0.24\textwidth}P{0.58\textwidth}C{0.12\textwidth}@{}}
+\toprule\noalign{}
+Fitur & Cara Kerja & Interval \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Notifikasi & Fetch \texttt{/api/notifications/unread} & 12 detik \\
+Resource server & Fetch \texttt{/api/server-resources} & 8 detik \\
+Health check & GET \texttt{/api/health} & On demand \\
+\end{longtable}
+
+\subsection{4.6 Alert Notification}\label{46-alert-notification}
+
+Alur alert:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Transaksi/transfer selesai}
+\NormalTok{  ▼}
+\NormalTok{StockAlertService}
+\NormalTok{  ├─ stok \textgreater{} threshold: selesai}
+\NormalTok{  ├─ stok \textless{}= threshold: error\_logs warning + notification}
+\NormalTok{  └─ stok == 0: error\_logs critical + notification}
+\end{Highlighting}
+\end{Shaded}
+
+Target notifikasi: user aktif dengan role Admin dan Manajer Gudang.
+
+\subsection{4.7 Risiko Keamanan dan
+Mitigasi}\label{47-risiko-keamanan-dan-mitigasi}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Risiko & Dampak & Mitigasi Aktual \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+SQL Injection & Data rusak/bocor & Eloquent, Query Builder, validation,
+whitelist sort \\
+XSS & Script injection & Blade escape \texttt{\{\{\ \}\}}, validasi
+input, CSP header \\
+CSRF & Request palsu & \texttt{@csrf} pada form dan token pada PATCH
+fetch \\
+Brute force login & Akun dibobol & RateLimiter 5 attempt/menit per
+email+IP \\
+Session hijacking & Sesi dicuri & Session regenerate saat login,
+invalidate saat logout, timeout 30 menit, http\_only cookie \\
+Broken access control & Role bypass & \texttt{auth}, \texttt{role}
+middleware, \texttt{canModify()} \\
+Upload file berbahaya & Malware/script upload & Validasi \texttt{image},
+mime jpg/jpeg/png/webp, max 2MB \\
+Error disclosure & Stack trace tampil & Exception disimpan ke
+\texttt{error\_logs}, custom 403/404 \\
+Audit gap & Sulit forensik & \texttt{AuditLogMiddleware} mencatat
+operasi write \\
+\end{longtable}
+
+\subsection{4.8 Security Headers}\label{48-security-headers}
+
+\texttt{SecurityHeaders} menambahkan:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{X{-}Content{-}Type{-}Options: nosniff}
+\NormalTok{X{-}Frame{-}Options: SAMEORIGIN}
+\NormalTok{X{-}XSS{-}Protection: 1; mode=block}
+\NormalTok{Referrer{-}Policy: strict{-}origin{-}when{-}cross{-}origin}
+\NormalTok{Permissions{-}Policy: camera=(), microphone=(), geolocation=()}
+\NormalTok{Content{-}Security{-}Policy: default{-}src \textquotesingle{}self\textquotesingle{}; script/style/font/img/connect source disesuaikan untuk CDN Chart.js, Leaflet, dan asset aplikasi}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{4.9 Analisis Skalabilitas}\label{49-analisis-skalabilitas}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Area & Implementasi Saat Ini & Peningkatan Jika Beban Naik \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Database & MySQL + index FK/filter & Tambah composite index, read
+replica \\
+Queue & Database queue & Migrasi ke Redis queue bila volume job
+tinggi \\
+Dashboard & Query saat load & Cache KPI 1-5 menit \\
+File upload & Local storage & Object storage untuk multi-server \\
+PDF & Background job & Worker terpisah dengan process manager seperti
+Supervisor \\
+Web server & Single app server & Load balancer dan horizontal scaling
+jika traffic meningkat \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 5 - Manajemen Proyek, Migrasi, Cutover, dan
+Pembaharuan}\label{bab-5---manajemen-proyek-migrasi-cutover-dan-pembaharuan}
+
+\subsection{5.1 Project Charter}\label{51-project-charter}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Elemen & Isi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Nama Proyek & SmartStock Pro \\
+Sponsor & PT Maju Bersama Digital \\
+Asesi/Developer & Husni Abdillah \\
+Masalah & Spreadsheet manual, stok tidak sinkron, laporan lambat, tidak
+ada alert \\
+Tujuan & Website inventaris multi-gudang dengan pembaruan berkala
+berbasis polling \\
+Deliverable & Prototype Laravel, database MySQL, dashboard, report PDF,
+import CSV, dokumentasi \\
+Batasan Waktu & 3 hari efektif / 18 jam \\
+Kriteria Sukses & Modul utama bisa didemokan dan dokumen memenuhi
+FR.IA.04A/04B \\
+\end{longtable}
+
+\subsection{5.2 WBS dan Scope}\label{52-wbs-dan-scope}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+WBS & Pekerjaan & Output \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1.0 & Analisis kebutuhan & Scope dan kebutuhan \\
+2.0 & Desain arsitektur & Topologi, ERD, server spec \\
+3.0 & Auth dan RBAC & Login, role, session \\
+4.0 & Master data & Produk, kategori, gudang, supplier \\
+5.0 & Transaksi & Masuk, keluar, transfer \\
+6.0 & Dashboard & Chart, map, monitoring \\
+7.0 & Alert dan log & Notification, error log, audit log \\
+8.0 & Import/export & CSV import, PDF export \\
+9.0 & Testing/UAT & Test scenario dan sign-off \\
+10.0 & Dokumentasi & Laporan, user guide, FAQ \\
+\end{longtable}
+
+\subsection{5.3 Quality Checklist}\label{53-quality-checklist}
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  Login/logout berjalan dan session aman.
+\item[$\square$]
+  Role Admin, Manajer, Staf, Viewer sesuai akses.
+\item[$\square$]
+  CRUD master data berjalan.
+\item[$\square$]
+  Transaksi keluar tidak boleh melebihi stok.
+\item[$\square$]
+  Transfer antar gudang atomik.
+\item[$\square$]
+  Alert stok minimum tercatat.
+\item[$\square$]
+  Import CSV diproses oleh queue.
+\item[$\square$]
+  PDF dapat diunduh.
+\item[$\square$]
+  Audit log mencatat operasi write.
+\item[$\square$]
+  Error log mencatat exception/job gagal.
+\end{itemize}
+
+\subsection{5.4 Strategi Migrasi Spreadsheet ke
+MySQL}\label{54-strategi-migrasi-spreadsheet-ke-mysql}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Tahap & Aktivitas \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Extract & Export Excel lama ke CSV UTF-8 \\
+Transform & Normalisasi SKU, kategori, supplier, angka, threshold \\
+Load & Upload CSV dan proses melalui \texttt{ProcessBatchImport} \\
+Validate & Bandingkan \texttt{COUNT(products)} dan
+\texttt{SUM(warehouse\_stocks.quantity)} \\
+Sign-off & Manajer gudang menyetujui saldo awal \\
+\end{longtable}
+
+\subsubsection{Mapping Field}\label{mapping-field}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Spreadsheet & Database & Transformasi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Kode Barang & \texttt{products.sku} & Trim, uppercase, unique \\
+Nama Barang & \texttt{products.name} & Trim \\
+Kategori & \texttt{categories.name} / \texttt{products.category\_id} &
+Lookup/create \\
+Supplier & \texttt{suppliers.name} / \texttt{products.supplier\_id} &
+Lookup \\
+Harga & \texttt{products.\allowbreak price} & Numeric \\
+Minimum Stok & \texttt{products.\allowbreak minimum\_threshold} & Default 5 \\
+Gudang & \texttt{warehouses.id} & Lookup nama/kota \\
+Jumlah & \texttt{warehouse\_stocks.quantity} & Integer \textgreater=
+0 \\
+\end{longtable}
+
+\subsubsection{Validasi SQL}\label{validasi-sql}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \FunctionTok{COUNT}\NormalTok{(}\OperatorTok{*}\NormalTok{) }\KeywordTok{AS}\NormalTok{ total\_produk }\KeywordTok{FROM}\NormalTok{ products;}
+
+\KeywordTok{SELECT}\NormalTok{ w.city, }\FunctionTok{SUM}\NormalTok{(ws.quantity) }\KeywordTok{AS}\NormalTok{ total\_stok}
+\KeywordTok{FROM}\NormalTok{ warehouse\_stocks ws}
+\KeywordTok{JOIN}\NormalTok{ warehouses w }\KeywordTok{ON}\NormalTok{ w.}\KeywordTok{id} \OperatorTok{=}\NormalTok{ ws.warehouse\_id}
+\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ w.city;}
+
+\KeywordTok{SELECT}\NormalTok{ sku, }\FunctionTok{COUNT}\NormalTok{(}\OperatorTok{*}\NormalTok{) }\KeywordTok{FROM}\NormalTok{ products }\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ sku }\KeywordTok{HAVING} \FunctionTok{COUNT}\NormalTok{(}\OperatorTok{*}\NormalTok{) }\OperatorTok{\textgreater{}} \DecValTok{1}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Rollback Plan}\label{rollback-plan}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Langkah & Aksi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Aktifkan maintenance mode: \texttt{php\ artisan\ down} \\
+2 & Stop/restart queue worker: \texttt{php\ artisan\ queue:restart} \\
+3 & Restore backup MySQL pre-cutover \\
+4 & Verifikasi jumlah produk dan stok \\
+5 & Aktifkan aplikasi: \texttt{php\ artisan\ up} \\
+6 & Gunakan spreadsheet sebagai fallback sementara \\
+\end{longtable}
+
+\subsection{5.5 Cutover Plan}\label{55-cutover-plan}
+
+\begin{longtable}[]{@{}P{0.15\textwidth}P{0.22\textwidth}P{0.18\textwidth}P{0.39\textwidth}@{}}
+\toprule\noalign{}
+Waktu & Aktivitas & PIC & Checklist \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+H-2 & Backup database/spreadsheet lama & Admin IT & {[} {]} \\
+H-1 & Export CSV final & Manajer Gudang & {[} {]} \\
+H-1 & Import ke staging & Developer & {[} {]} \\
+H-1 & Validasi total stok & QA + Manajer & {[} {]} \\
+H & Deploy via Git & Developer & {[} {]} \\
+H & \texttt{composer\ install\ -\/-no-dev}, \texttt{npm\ run\ build} &
+Developer & {[} {]} \\
+H & \texttt{php\ artisan\ migrate\ -\/-force} & Developer & {[} {]} \\
+H & Import data final & Developer & {[} {]} \\
+H & Smoke test login, CRUD, transaksi, laporan & QA & {[} {]} \\
+H & Go-live & PM & {[} {]} \\
+H+1 & Hypercare dan monitor error log & Developer/Admin & {[} {]} \\
+\end{longtable}
+
+\subsection{5.6 Simulasi Pembaharuan via
+Git}\label{56-simulasi-pembaharuan-via-git}
+
+Skenario: menambahkan export Excel tanpa mengganggu laporan PDF.
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Tahap & Command/Proses & Tujuan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Branch & \texttt{git\ checkout\ -b\ feature/export-excel} & Isolasi
+fitur \\
+Develop & Tambah controller, route, button & Implementasi \\
+Test & \texttt{php\ artisan\ test} + manual UAT & Validasi \\
+Merge & Pull request ke \texttt{develop} & Review \\
+Release & \texttt{git\ checkout\ -b\ release/1.1.0} & Stabilkan \\
+Deploy &
+\texttt{git\ pull\ \&\&\ composer\ install\ -\/-no-dev\ \&\&\ php\ artisan\ migrate\ -\/-force}
+& Production update \\
+Rollback & \texttt{git\ revert\ \textless{}merge\_commit\textgreater{}}
+& Aman tanpa force push \\
+\end{longtable}
+
+\subsection{5.7 Impact Analysis}\label{57-impact-analysis}
+
+\begin{longtable}[]{@{}P{0.15\textwidth}P{0.22\textwidth}P{0.18\textwidth}P{0.39\textwidth}@{}}
+\toprule\noalign{}
+Perubahan & Modul Terdampak & Risiko & Mitigasi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Menambah field produk & Produk, import, laporan, PDF & Form/import gagal
+& Field nullable/default, update validation \\
+FIFO cost-layer penuh & Transaksi, transfer, laporan & Perubahan logika
+besar & Tambah tabel \texttt{stock\_batches}, UAT stok \\
+Migrasi queue ke Redis & Import, PDF, notification & Worker salah
+konfigurasi & Staging test, rollback DB queue \\
+Tambah gudang baru & Dashboard, transfer, laporan & Map/agregasi perlu
+validasi & Validasi koordinat dan stok awal \\
+Tambah email alert & Alert, mail config & Email gagal & Database
+notification tetap fallback \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Bab 6 - Dokumentasi Pelanggan, API, Troubleshooting, FAQ, dan
+UAT}\label{bab-6---dokumentasi-pelanggan-api-troubleshooting-faq-dan-uat}
+
+\subsection{6.1 Instalasi Lokal dengan
+MySQL}\label{61-instalasi-lokal-dengan-mysql}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone https://github.com/husni{-}abdillah/SmartStock{-}Pro{-}BNSP.git SmartStock{-}Pro{-}BNSP}
+\BuiltInTok{cd}\NormalTok{ SmartStock{-}Pro{-}BNSP}
+\ExtensionTok{composer}\NormalTok{ install}
+\ExtensionTok{npm}\NormalTok{ install}
+\FunctionTok{cp}\NormalTok{ .env.example .env}
+\ExtensionTok{php}\NormalTok{ artisan key:generate}
+\end{Highlighting}
+\end{Shaded}
+
+Edit \texttt{.env}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DB\_CONNECTION=mysql}
+\NormalTok{DB\_HOST=127.0.0.1}
+\NormalTok{DB\_PORT=3306}
+\NormalTok{DB\_DATABASE=smartstock}
+\NormalTok{DB\_USERNAME=root}
+\NormalTok{DB\_PASSWORD=}
+
+\NormalTok{QUEUE\_CONNECTION=database}
+\NormalTok{SESSION\_DRIVER=database}
+\NormalTok{SESSION\_LIFETIME=30}
+\NormalTok{CACHE\_STORE=database}
+\end{Highlighting}
+\end{Shaded}
+
+Jalankan:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{php}\NormalTok{ artisan migrate }\AttributeTok{{-}{-}seed}
+\ExtensionTok{php}\NormalTok{ artisan storage:link}
+\ExtensionTok{npm}\NormalTok{ run build}
+\ExtensionTok{php}\NormalTok{ artisan serve}
+\ExtensionTok{php}\NormalTok{ artisan queue:work}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{6.2 Akun Demo Seeder}\label{62-akun-demo-seeder}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Email & Password & Role \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\url{admin@smartstock.id} & \texttt{password} & Admin \\
+\url{manager@smartstock.id} & \texttt{password} & Manajer Gudang \\
+\url{staf@smartstock.id} & \texttt{password} & Staf Gudang \\
+\url{viewer@smartstock.id} & \texttt{password} & Viewer \\
+\end{longtable}
+
+Note
+
+Password demo sengaja dibuat sederhana untuk kebutuhan uji kompetensi.
+Pada pembuatan user baru, aplikasi tetap menerapkan validasi password
+minimal 8 karakter, mengandung huruf, dan mengandung angka melalui
+\texttt{Password::min(8)-\textgreater{}letters()-\textgreater{}numbers()}.
+
+\subsection{6.3 Panduan Fitur Utama}\label{63-panduan-fitur-utama}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Fitur & Cara Penggunaan \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Login & Buka \texttt{/login}, masukkan email dan password \\
+Dashboard & Lihat KPI, grafik tren, peta, resource monitor \\
+Produk & Tambah/edit produk, upload gambar, cari/filter/sort \\
+Import CSV & Menu Produk, upload CSV, jalankan queue worker \\
+Transaksi masuk & Pilih produk, gudang, supplier, jumlah; stok
+bertambah \\
+Transaksi keluar & Pilih produk, gudang, jumlah; sistem validasi stok
+cukup \\
+Transfer & Pilih produk, gudang asal/tujuan, jumlah; stok dipindah
+atomik \\
+Laporan & Buka menu Laporan, download PDF \\
+Audit Log & Admin melihat catatan aktivitas write \\
+Error Log & Admin/Manajer melihat alert/error berdasarkan severity \\
+\end{longtable}
+
+\subsection{6.4 Dokumentasi API}\label{64-dokumentasi-api}
+
+Semua endpoint API memakai middleware \texttt{auth}.
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Method & Endpoint & Fungsi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+GET & \url{/api/health} & Health check aplikasi \\
+GET & \url{/api/server-resources} & CPU, memory, response time \\
+GET & \url{/api/stock?product_id={id}\&warehouse_id={id}} &
+Ambil stok produk pada gudang tertentu untuk preview transfer \\
+GET & \url{/api/notifications/unread} & Daftar notifikasi belum
+dibaca \\
+PATCH & \url{/api/notifications/{id}/read} & Tandai satu notifikasi
+terbaca \\
+PATCH & \url{/api/notifications/read-all} & Tandai semua notifikasi
+terbaca \\
+\end{longtable}
+
+Contoh response \texttt{/api/server-resources}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+  \DataTypeTok{"cpu"}\FunctionTok{:} \FloatTok{28.4}\FunctionTok{,}
+  \DataTypeTok{"memory"}\FunctionTok{:} \FloatTok{35.7}\FunctionTok{,}
+  \DataTypeTok{"response\_time"}\FunctionTok{:} \DecValTok{68}\FunctionTok{,}
+  \DataTypeTok{"timestamp"}\FunctionTok{:} \StringTok{"2026{-}05{-}27T16:00:00.000000Z"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{6.5 Troubleshooting}\label{65-troubleshooting}
+
+\begin{longtable}[]{@{}P{0.20\textwidth}P{0.26\textwidth}P{0.50\textwidth}@{}}
+\toprule\noalign{}
+Masalah & Penyebab & Solusi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Login gagal & Password salah/user nonaktif/rate limit & Cek akun, tunggu
+rate limit selesai \\
+Error 403 & Role tidak berhak & Gunakan role sesuai atau ubah via
+Admin \\
+Error 419 & CSRF/session expired & Refresh dan login ulang \\
+Gambar 404 & Storage link belum dibuat &
+\texttt{php\ artisan\ storage:link} \\
+Import CSV tidak jalan & Queue worker mati &
+\texttt{php\ artisan\ queue:work} \\
+PDF besar tidak selesai & Job gagal/worker mati & Cek
+\texttt{failed\_jobs} dan \texttt{error\_logs} \\
+Notifikasi tidak muncul & Threshold belum tercapai atau role bukan
+target & Pastikan stok \textless= threshold dan login Admin/Manajer \\
+Query lambat & Data membesar/index kurang & Cek \texttt{EXPLAIN}, tambah
+index, optimasi query \\
+Transfer ditolak & Stok asal tidak cukup/gudang sama & Perbaiki quantity
+dan tujuan \\
+Dashboard resource kosong & API gagal atau belum login & Cek
+\texttt{/api/server-resources} dan session \\
+\end{longtable}
+
+Perintah debugging:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{php}\NormalTok{ artisan about}
+\ExtensionTok{php}\NormalTok{ artisan route:list}
+\ExtensionTok{php}\NormalTok{ artisan migrate:status}
+\ExtensionTok{php}\NormalTok{ artisan queue:failed}
+\ExtensionTok{php}\NormalTok{ artisan queue:retry all}
+\ExtensionTok{php}\NormalTok{ artisan optimize:clear}
+\ExtensionTok{php}\NormalTok{ artisan test}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{6.6 Skenario UAT}\label{66-skenario-uat}
+
+\begin{longtable}[]{@{}P{0.10\textwidth}P{0.14\textwidth}P{0.26\textwidth}P{0.30\textwidth}P{0.14\textwidth}@{}}
+\toprule\noalign{}
+ID & Modul & Skenario & Expected Result & Status \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+UAT-01 & Auth & Login Admin & Masuk dashboard dan audit tercatat &
+Simulasi Lulus \\
+UAT-02 & RBAC & Viewer akses \texttt{/users} & Ditolak 403 & Simulasi
+Lulus \\
+UAT-03 & Produk & Tambah produk dengan gambar & Produk tersimpan,
+preview muncul & Simulasi Lulus \\
+UAT-04 & Search & Cari SKU produk & Produk sesuai keyword muncul &
+Simulasi Lulus \\
+UAT-05 & Transaksi & Barang masuk 10 unit & Stok bertambah 10 & Simulasi
+Lulus \\
+UAT-06 & Transaksi & Barang keluar melebihi stok & Ditolak dengan pesan
+validasi & Simulasi Lulus \\
+UAT-07 & Transfer & Transfer 5 unit antar gudang & Stok asal turun dan
+tujuan naik & Simulasi Lulus \\
+UAT-08 & Alert & Stok turun sampai threshold & Error log dan notifikasi
+muncul & Simulasi Lulus \\
+UAT-09 & Laporan & Export PDF & File PDF terunduh & Simulasi Lulus \\
+UAT-10 & Import & Upload CSV valid & Produk diproses oleh queue &
+Simulasi Lulus \\
+UAT-11 & Monitoring & Dashboard resource & CPU/memory/response time
+terupdate & Simulasi Lulus \\
+UAT-12 & Debugging & Simulasi job gagal &
+\texttt{failed\_jobs}/\texttt{error\_logs} mencatat kegagalan & Simulasi
+Lulus \\
+\end{longtable}
+
+Note
+
+Status UAT di atas adalah hasil simulasi demonstrasi lokal. Untuk
+lingkungan pelanggan, tabel ini perlu ditandatangani perwakilan
+gudang/manajemen sebagai bukti persetujuan pengguna.
+
+\subsection{6.7 FAQ}\label{67-faq}
+
+\subsubsection{1. Apa itu SmartStock
+Pro?}\label{1-apa-itu-smartstock-pro}
+
+SmartStock Pro adalah website inventaris multi-gudang untuk PT Maju
+Bersama Digital, menggantikan spreadsheet manual dengan sistem berbasis
+Laravel.
+
+\subsubsection{2. Database apa yang
+digunakan?}\label{2-database-apa-yang-digunakan}
+
+Database uji/production menggunakan MySQL 8.x. SQLite hanya default
+\texttt{.env.example} bawaan Laravel untuk development cepat.
+
+\subsubsection{3. Apakah mendukung 5
+gudang?}\label{3-apakah-mendukung-5-gudang}
+
+Ya. Seeder menyediakan gudang Jakarta, Surabaya, Bandung, Medan, dan
+Makassar lengkap dengan koordinat.
+
+\subsubsection{4. Apa saja role
+pengguna?}\label{4-apa-saja-role-pengguna}
+
+Admin, Manajer Gudang, Staf Gudang, dan Viewer.
+
+\subsubsection{5. Bagaimana sistem mencegah stok
+minus?}\label{5-bagaimana-sistem-mencegah-stok-minus}
+
+Transaksi keluar dan transfer memeriksa stok tersedia sebelum melakukan
+decrement.
+
+\subsubsection{6. Apakah transfer antar gudang
+aman?}\label{6-apakah-transfer-antar-gudang-aman}
+
+Ya. Transfer memakai \texttt{DB::transaction()} sehingga perubahan stok
+asal dan tujuan atomik.
+
+\subsubsection{7. Apakah real-time memakai
+WebSocket?}\label{7-apakah-real-time-memakai-websocket}
+
+Tidak. Implementasi aktual memakai polling API berkala: 12 detik untuk
+notifikasi dan 8 detik untuk resource monitor.
+
+\subsubsection{8. Bagaimana cara import data
+produk?}\label{8-bagaimana-cara-import-data-produk}
+
+Upload file CSV melalui menu Produk. Job \texttt{ProcessBatchImport}
+memproses data di background.
+
+\subsubsection{9. Mengapa laporan PDF besar perlu
+queue?}\label{9-mengapa-laporan-pdf-besar-perlu-queue}
+
+Agar proses generate PDF tidak membuat UI freeze dan tidak menahan
+request utama.
+
+\subsubsection{10. Apakah sistem memakai Redis atau
+Celery?}\label{10-apakah-sistem-memakai-redis-atau-celery}
+
+Tidak. Queue aktual memakai Laravel database queue. Redis dapat menjadi
+rencana peningkatan jika job meningkat.
+
+\subsubsection{11. Apakah sistem memakai
+PostgreSQL?}\label{11-apakah-sistem-memakai-postgresql}
+
+Tidak. Untuk implementasi ini, dokumentasi diselaraskan ke MySQL sesuai
+penggunaan Anda.
+
+\subsubsection{12. Bagaimana jika aplikasi
+error?}\label{12-bagaimana-jika-aplikasi-error}
+
+Unhandled exception dicatat ke tabel \texttt{error\_logs} dengan
+severity \texttt{critical} dan dapat dilihat dari menu Error Log.
+
+\subsection{6.8 Jawaban Singkat untuk Pertanyaan
+Asesor}\label{68-jawaban-singkat-untuk-pertanyaan-asesor}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Aspek & Jawaban Ringkas \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Analisis dan perancangan & Prioritas dimulai dari keamanan, arsitektur
+MySQL-Laravel, database, lalu fitur dashboard dan laporan \\
+Notifikasi tidak muncul/query lambat & Cek \texttt{StockAlertService},
+\texttt{notifications}, \texttt{error\_logs}, \texttt{failed\_jobs},
+lalu optimasi index/query dengan \texttt{EXPLAIN} \\
+UAT & Susun skenario bersama gudang/manajemen, catat hasil, ambil
+sign-off \\
+Scope creep & Catat di change log, analisis impact, buat branch Git,
+jadwalkan release berikutnya \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Lampiran A - Struktur
+Repository}\label{lampiran-a---struktur-repository}
+
+\begin{longtable}[]{@{}P{0.26\textwidth}P{0.70\textwidth}@{}}
+\toprule\noalign{}
+Area & Path \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Web routes & \texttt{routes/web.php} \\
+API routes & \texttt{routes/api.php} \\
+Controllers & \texttt{app/Http/Controllers} \\
+API Controllers & \texttt{app/Http/Controllers/Api} \\
+Models & \texttt{app/Models} \\
+Jobs & \texttt{app/Jobs} \\
+Services & \texttt{app/Services} \\
+Notifications & \texttt{app/Notifications} \\
+Middleware & \texttt{app/Http/Middleware} \\
+Migrations & \texttt{database/migrations} \\
+Seeder & \texttt{database/seeders/DatabaseSeeder.php} \\
+Views & \texttt{resources/views} \\
+PDF view & \texttt{resources/views/reports/inventory-pdf.blade.php} \\
+\end{longtable}
+
+\section{Lampiran B - Gudang Seeder}\label{lampiran-b---gudang-seeder}
+
+\begin{longtable}[]{@{}P{0.10\textwidth}P{0.26\textwidth}P{0.22\textwidth}C{0.12\textwidth}C{0.12\textwidth}@{}}
+\toprule\noalign{}
+No & Gudang & Kota & Latitude & Longitude \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Gudang Jakarta Pusat & Jakarta & -6.2088 & 106.8456 \\
+2 & Gudang Surabaya & Surabaya & -7.2575 & 112.7521 \\
+3 & Gudang Bandung & Bandung & -6.9175 & 107.6191 \\
+4 & Gudang Medan & Medan & 3.5952 & 98.6722 \\
+5 & Gudang Makassar & Makassar & -5.1477 & 119.4327 \\
+\end{longtable}
+
+\end{document}
