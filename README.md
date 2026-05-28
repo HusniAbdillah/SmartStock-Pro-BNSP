@@ -18,6 +18,23 @@
   > Dikembangkan untuk memenuhi prasyarat **Sertifikasi BNSP Skema Web Developer**
 </div>
 
+<div align="center">
+  <a href="docs/Dokumen_Penjelasan_Singkat_Proyek.pdf">Dokumen Penjelasan Singkat Proyek (PDF)</a>
+</div>
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="public/images/1.png" alt="Tampilan 1" width="360"></td>
+      <td><img src="public/images/2.png" alt="Tampilan 2" width="360"></td>
+    </tr>
+    <tr>
+      <td><img src="public/images/3.png" alt="Tampilan 3" width="360"></td>
+      <td><img src="public/images/4.png" alt="Tampilan 4" width="360"></td>
+    </tr>
+  </table>
+</div>
+
 ---
 
 ## Tentang Aplikasi
