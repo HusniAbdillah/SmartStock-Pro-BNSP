@@ -196,7 +196,7 @@
                 <div class="flex items-center gap-2">
 
                     {{-- Notification Bell --}}
-                    <div x-data="notificationBell()" x-init="init()" class="relative">
+                    <div x-data="notificationBell()" class="relative">
                         <button @click="toggleDropdown()"
                             class="relative flex items-center justify-center w-9 h-9 rounded"
                             style="background:transparent; border:none; color:#64748D; cursor:pointer; transition:background-color 120ms ease;"
@@ -215,29 +215,48 @@
                             x-transition:enter-start="opacity-0 translate-y-1"
                             x-transition:enter-end="opacity-100 translate-y-0"
                             class="absolute right-0 mt-1"
-                            style="width:320px; background:#FFFFFF; border:1px solid #D4DEE9; border-radius:6px; box-shadow:0px 10px 40px rgba(0,0,0,0.1); overflow:hidden; z-index:50;">
+                            style="width:340px; background:#FFFFFF; border:1px solid #D4DEE9; border-radius:6px; box-shadow:0px 10px 40px rgba(0,0,0,0.1); overflow:hidden; z-index:50;">
                             <div class="flex items-center justify-between px-4 py-3" style="border-bottom:1px solid #E5EDF5;">
                                 <span style="font-size:14px; font-weight:500; color:#061B31;">Notifikasi</span>
                                 <button @click="markAllRead()" style="font-size:12px; color:#533AFD; background:none; border:none; cursor:pointer; padding:0;">Tandai semua dibaca</button>
                             </div>
-                            <div style="max-height:280px; overflow-y:auto;">
+                            <div style="max-height:320px; overflow-y:auto;">
                                 <template x-if="notifications.length === 0">
-                                    <div class="px-4 py-8 text-center" style="font-size:14px; color:#64748D;">Tidak ada notifikasi baru</div>
+                                    <div class="px-4 py-8 text-center" style="font-size:13px; color:#64748D;">Tidak ada notifikasi</div>
                                 </template>
                                 <template x-for="n in notifications" :key="n.id">
-                                    <div class="px-4 py-3 cursor-pointer"
-                                        :style="!n.read_at ? 'background:#FAFBFE;' : ''"
+                                    <div class="px-4 py-3"
+                                        :style="!n.read_at ? 'background:#FAFBFE;' : 'background:#FFFFFF;'"
                                         style="border-bottom:1px solid #F1F5F9; transition:background-color 100ms ease;"
-                                        @mouseover="$el.style.backgroundColor='#F8FAFC'"
-                                        @mouseout="$el.style.backgroundColor = !n.read_at ? '#FAFBFE' : ''"
-                                        @click="markRead(n.id)">
+                                        @mouseover="$el.style.backgroundColor='#F4F6FF'"
+                                        @mouseout="$el.style.backgroundColor = !n.read_at ? '#FAFBFE' : '#FFFFFF'">
                                         <div class="flex items-start gap-3">
+                                            {{-- Icon dot: biru = belum baca, abu = sudah --}}
                                             <div class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                                                :style="!n.read_at ? 'background:#533AFD;' : 'background:transparent;'"></div>
-                                            <div>
-                                                <p style="font-size:14px; font-weight:500; color:#061B31;" x-text="n.data.title"></p>
-                                                <p style="font-size:12px; color:#64748D; margin-top:2px;" x-text="n.data.message"></p>
-                                                <p style="font-size:11px; color:#B8CCDB; margin-top:4px;" x-text="n.created_at"></p>
+                                                :style="!n.read_at ? 'background:#533AFD;' : 'background:#CBD5E1;'"></div>
+                                            <div style="flex:1; min-width:0;">
+                                                <p style="font-size:13px; font-weight:500; color:#061B31; line-height:1.3;" x-text="n.data.title"></p>
+                                                <p style="font-size:12px; color:#64748D; margin-top:3px; line-height:1.4;" x-text="n.data.message"></p>
+                                                <div class="flex items-center justify-between" style="margin-top:6px;">
+                                                    <p style="font-size:11px; color:#B8CCDB;" x-text="n.created_at"></p>
+                                                    {{-- Tombol unduh hanya untuk notifikasi report_ready --}}
+                                                    <template x-if="n.data.type === 'report_ready' && n.data.filename">
+                                                        <a :href="'/reports/export-pdf/status/' + n.data.filename"
+                                                           @click.stop="markRead(n.id)"
+                                                           style="font-size:11px; font-weight:600; color:#533AFD; text-decoration:none; display:inline-flex; align-items:center; gap:3px; padding:2px 8px; background:#EEF2FF; border-radius:4px;">
+                                                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                                            Unduh
+                                                        </a>
+                                                    </template>
+                                                    {{-- Klik area selain tombol unduh: tandai dibaca --}}
+                                                    <template x-if="!n.data.type || n.data.type !== 'report_ready'">
+                                                        <button @click="markRead(n.id)"
+                                                            x-show="!n.read_at"
+                                                            style="font-size:11px; color:#94A3B8; background:none; border:none; cursor:pointer; padding:0;">
+                                                            Tandai dibaca
+                                                        </button>
+                                                    </template>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -433,28 +452,42 @@
             unreadCount: 0,
             init() {
                 this.fetchNotifications();
-                setInterval(() => this.fetchNotifications(), 12000);
+                setInterval(() => this.fetchNotifications(), 5000);
             },
             async fetchNotifications() {
                 try {
-                    const r = await fetch('/api/notifications/unread', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                    const r = await fetch('/api/notifications/unread', {
+                        credentials: 'same-origin',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                    });
+                    if (!r.ok) return;
                     const d = await r.json();
                     this.notifications = d.notifications ?? [];
-                    this.unreadCount   = d.unread_count ?? 0;
+                    this.unreadCount   = d.unread_count  ?? 0;
                 } catch (_) {}
             },
             toggleDropdown() { this.open = !this.open; },
             async markRead(id) {
                 await fetch(`/api/notifications/${id}/read`, {
                     method: 'PATCH',
-                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'X-Requested-With': 'XMLHttpRequest' }
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
                 this.fetchNotifications();
             },
             async markAllRead() {
                 await fetch('/api/notifications/read-all', {
                     method: 'PATCH',
-                    headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'X-Requested-With': 'XMLHttpRequest' }
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
                 });
                 this.open = false;
                 this.fetchNotifications();

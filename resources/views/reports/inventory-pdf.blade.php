@@ -282,9 +282,10 @@
                     <span class="accent-dot"></span>Laporan Inventaris
                 </div>
                 <div class="report-meta">
-                    Dibuat&nbsp;: {{ now()->translatedFormat('d F Y') }}, {{ now()->format('H:i') }} WIB<br>
-                    Periode&nbsp;&nbsp;: {{ now()->translatedFormat('F Y') }}<br>
-                    Cakupan&nbsp;: Seluruh Gudang Aktif ({{ $warehouses->count() }} lokasi)
+                    Dibuat&nbsp;: {{ tgl_indo(now(), 'd F Y') }}, {{ now()->format('H:i') }} WIB<br>
+                    Periode&nbsp;&nbsp;: {{ tgl_indo(now(), 'F Y') }}<br>
+                    Cakupan&nbsp;: {{ $filterLabel ?? 'Seluruh Gudang Aktif' }}
+                    @if(empty($filterLabel)) ({{ $warehouses->count() }} lokasi)@endif
                 </div>
             </div>
         </div>
