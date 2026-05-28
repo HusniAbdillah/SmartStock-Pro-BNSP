@@ -362,7 +362,10 @@ X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
-Content-Security-Policy: default-src 'self'; script/style/font/img/connect source disesuaikan untuk CDN Chart.js, Leaflet, dan asset aplikasi
+Content-Security-Policy: default-src 'self';
+Source policy untuk script, style, font, image, dan connect
+dikonfigurasi sesuai kebutuhan CDN Chart.js, Leaflet,
+serta asset aplikasi internal.
 ```
 
 ## 4.9 Analisis Skalabilitas

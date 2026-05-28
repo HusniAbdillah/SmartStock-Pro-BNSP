@@ -20,6 +20,8 @@
 
 <div align="center">
   <a href="docs/Dokumen_Penjelasan_Singkat_Proyek.pdf">Dokumen Penjelasan Singkat Proyek (PDF)</a>
+  <br>
+  <a href="docs/Dokumen_Penjelasan_Singkat_Proyek.md">Dokumen Penjelasan Singkat Proyek (MD)</a>
 </div>
 
 <div align="center">
