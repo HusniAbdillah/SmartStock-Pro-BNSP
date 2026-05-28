@@ -4,9 +4,10 @@ namespace App\Jobs;
 
 use App\Models\ErrorLog;
 use App\Models\InventoryTransaction;
-use App\Models\Product;
+use App\Models\User;
 use App\Models\Warehouse;
 use App\Models\WarehouseStock;
+use App\Notifications\ReportReadyNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -83,16 +84,25 @@ class GenerateLargeReport implements ShouldQueue
         ]);
 
         // Save to storage
-        $directory = 'reports';
+        $directory  = 'reports';
+        $pdfContent = $pdf->output();
         Storage::disk('local')->makeDirectory($directory);
-        Storage::disk('local')->put("{$directory}/{$this->filename}", $pdf->output());
+        Storage::disk('local')->put("{$directory}/{$this->filename}", $pdfContent);
+
+        $fileSizeKb = (int) round(strlen($pdfContent) / 1024);
 
         ErrorLog::create([
             'severity'   => 'info',
-            'message'    => "Laporan inventaris berhasil dibuat: {$this->filename}",
+            'message'    => "Laporan inventaris berhasil dibuat: {$this->filename} ({$fileSizeKb} KB)",
             'source'     => 'report_generation',
             'created_at' => now(),
         ]);
+
+        // Kirim notifikasi in-app ke user yang meminta laporan
+        $user = User::find($this->userId);
+        if ($user) {
+            $user->notify(new ReportReadyNotification($this->filename, $fileSizeKb));
+        }
     }
 
     private function buildLogoBase64(int $targetHeight = 100): string
@@ -143,5 +153,11 @@ class GenerateLargeReport implements ShouldQueue
             'source'      => 'report_generation',
             'created_at'  => now(),
         ]);
+
+        // Kirim notifikasi kegagalan ke user yang meminta laporan
+        $user = User::find($this->userId);
+        if ($user) {
+            $user->notify(new ReportReadyNotification($this->filename, 0, failed: true));
+        }
     }
 }
