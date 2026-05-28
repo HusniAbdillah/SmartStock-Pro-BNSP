@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -19,6 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->api(prepend: [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+        ]);
+
         // Global web middleware
         $middleware->web(append: [
             SecurityHeaders::class,
@@ -32,9 +38,23 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Log all unhandled exceptions to error_logs table
-        $exceptions->report(function (\Throwable $e) {
+        $exceptions->report(function (\Throwable $e) use (&$exceptions) {
             if ($e instanceof NotFoundHttpException || $e instanceof AccessDeniedHttpException) {
                 return;
+            }
+
+            // Skip logging errors from high-frequency background polling endpoints
+            // to prevent error_logs table from being flooded.
+            $pollingPaths = [
+                'api/notifications/unread',
+                'api/server-resources',
+                'api/health',
+            ];
+            $requestPath = request()->path();
+            foreach ($pollingPaths as $path) {
+                if (str_starts_with($requestPath, $path)) {
+                    return;
+                }
             }
 
             try {
@@ -52,6 +72,16 @@ return Application::configure(basePath: dirname(__DIR__))
             } catch (\Throwable) {
                 // Prevent recursive exception logging from crashing the app
             }
+        });
+
+        // CSRF / session expired (419) — redirect dengan pesan, bukan halaman kosong
+        $exceptions->render(function (TokenMismatchException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Sesi habis. Muat ulang halaman dan coba lagi.'], 419);
+            }
+
+            return redirect()->back()
+                ->with('error', 'Sesi habis atau halaman terlalu lama terbuka. Muat ulang halaman (F5), lalu kirim ulang formulir.');
         });
 
         // Custom 403 response

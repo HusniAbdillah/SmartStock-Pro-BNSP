@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\ServerResourceController;
 use App\Http\Controllers\Api\StockController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
     Route::get('/server-resources', [ServerResourceController::class, 'index'])
          ->name('api.server-resources');
 

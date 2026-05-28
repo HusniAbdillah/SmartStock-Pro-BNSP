@@ -57,6 +57,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            // Set MySQL session timezone to match APP_TIMEZONE (Asia/Jakarta = +07:00)
+            // so that TIMESTAMP columns are stored and read in the correct local time.
+            'timezone' => '+07:00',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
