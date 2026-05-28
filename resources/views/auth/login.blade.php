@@ -168,7 +168,7 @@
                     <div class="space-y-2">
                         @foreach([
                             ['email' => 'admin@smartstock.id',   'role' => 'Admin',          'color' => '#533AFD', 'bg' => '#E8E9FF'],
-                            ['email' => 'manager@smartstock.id', 'role' => 'Manajer Gudang', 'color' => '#065F46', 'bg' => '#D1FAE5'],
+                            ['email' => 'manajer@smartstock.id', 'role' => 'Manajer Gudang', 'color' => '#065F46', 'bg' => '#D1FAE5'],
                             ['email' => 'staf@smartstock.id',    'role' => 'Staf Gudang',    'color' => '#92400E', 'bg' => '#FEF3C7'],
                             ['email' => 'viewer@smartstock.id',  'role' => 'Viewer',         'color' => '#1E3A8A', 'bg' => '#DBEAFE'],
                         ] as $demo)

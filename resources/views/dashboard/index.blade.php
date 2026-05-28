@@ -398,12 +398,16 @@ function serverMonitor() {
         },
         fetch: async function() {
             try {
-                var r = await window.fetch('/api/server-resources', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                var r = await window.fetch('/api/server-resources', {
+                    credentials: 'same-origin',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                if (!r.ok) { this.status = 'error'; return; }
                 var d = await r.json();
-                this.cpu          = d.cpu || 0;
-                this.memory       = d.memory || 0;
-                this.responseTime = d.response_time || 0;
-                this.phpVersion   = d.php_version || '\u2014';
+                this.cpu          = d.cpu          ?? 0;
+                this.memory       = d.memory       ?? 0;
+                this.responseTime = d.response_time ?? 0;
+                this.phpVersion   = d.php_version  || '\u2014';
                 this.lastUpdated  = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                 this.status       = 'ok';
             } catch (_) {
