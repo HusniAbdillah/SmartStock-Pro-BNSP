@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
 
         $manager = User::create([
             'name'     => 'Manajer Gudang',
-            'email'    => 'manager@smartstock.id',
+            'email'    => 'manajer@smartstock.id',
             'password' => Hash::make('password'),
             'role'     => 'Manajer Gudang',
         ]);
@@ -277,6 +277,9 @@ class DatabaseSeeder extends Seeder
                 'quantity'     => $qty,
             ]);
         }
+
+        // Notifikasi demo untuk Admin dan Manajer
+        $this->call(NotificationSeeder::class);
 
         // Seed some sample transactions for dashboard charts
         $transactionTypes = ['Masuk', 'Keluar'];
