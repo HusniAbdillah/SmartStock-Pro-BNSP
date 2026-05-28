@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Warehouse;
 use App\Models\WarehouseStock;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -71,10 +72,15 @@ class ReportController extends Controller
 
     /**
      * Synchronous small report download (aliased as reports.generate in routes).
+     * Routes by 'type' parameter: inventory (default) or transactions.
      */
     public function generate(Request $request): mixed
     {
-        return $this->generatePdfInline();
+        if ($request->input('type') === 'transactions') {
+            return $this->generateTransactionPdfInline($request);
+        }
+
+        return $this->generateInventoryPdfInline($request);
     }
 
     /**
@@ -94,7 +100,7 @@ class ReportController extends Controller
     {
         // For synchronous small export (immediate download)
         if ($request->get('mode') === 'sync') {
-            return $this->generatePdfInline();
+            return $this->generateInventoryPdfInline($request);
         }
 
         // Async: dispatch job and redirect with filename for polling
@@ -108,27 +114,43 @@ class ReportController extends Controller
 
     public function checkPdfStatus(string $filename)
     {
-        $path = "reports/{$filename}";
+        // Sanitize filename — no path traversal
+        $filename = basename($filename);
+        $path     = "reports/{$filename}";
 
-        if (Storage::disk('local')->exists($path)) {
-            // Return the file
-            $content = Storage::disk('local')->get($path);
-            Storage::disk('local')->delete($path); // Clean up after download
-
-            return response($content, 200, [
-                'Content-Type'        => 'application/pdf',
-                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            ]);
+        if (!Storage::disk('local')->exists($path)) {
+            if (request()->wantsJson()) {
+                return response()->json(['ready' => false, 'message' => 'File tidak ditemukan atau sudah diunduh.'], 404);
+            }
+            return redirect()->route('reports.index')
+                ->with('error', 'File laporan tidak ditemukan. Mungkin sudah diunduh sebelumnya atau belum selesai diproses.');
         }
 
-        return response()->json(['ready' => false]);
+        $content = Storage::disk('local')->get($path);
+
+        // Schedule cleanup: hapus file lebih dari 24 jam
+        $lastModified = Storage::disk('local')->lastModified($path);
+        if (now()->timestamp - $lastModified > 86400) {
+            Storage::disk('local')->delete($path);
+        }
+
+        return response($content, 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Content-Length'      => strlen($content),
+        ]);
     }
 
-    private function generatePdfInline(): Response
+    /**
+     * Laporan Inventaris — stok saat ini per gudang, dengan filter opsional.
+     */
+    private function generateInventoryPdfInline(Request $request): Response
     {
+        $warehouseId = $request->input('warehouse_id');
+
         $warehouses = Warehouse::where('is_active', true)->get();
 
-        $stockSummary = WarehouseStock::join('products', 'warehouse_stocks.product_id', '=', 'products.id')
+        $stockQuery = WarehouseStock::join('products', 'warehouse_stocks.product_id', '=', 'products.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('warehouses', 'warehouse_stocks.warehouse_id', '=', 'warehouses.id')
             ->select(
@@ -138,34 +160,100 @@ class ReportController extends Controller
                 DB::raw('warehouse_stocks.quantity * products.price AS nilai'),
                 'products.minimum_threshold',
             )
-            ->orderBy('warehouses.city')->orderBy('products.name')
-            ->get();
+            ->orderBy('warehouses.city')->orderBy('products.name');
 
+        if ($warehouseId) {
+            $stockQuery->where('warehouse_stocks.warehouse_id', $warehouseId);
+        }
+
+        $stockSummary  = $stockQuery->get();
         $totalValue    = $stockSummary->sum('nilai');
         $totalStock    = $stockSummary->sum('quantity');
         $criticalItems = $stockSummary->filter(fn($s) => $s->quantity <= $s->minimum_threshold);
 
         $recentTransactions = InventoryTransaction::with(['product', 'warehouse', 'operator'])
+            ->when($warehouseId, fn($q) => $q->where('warehouse_id', $warehouseId))
             ->orderByDesc('created_at')->take(30)->get();
 
-        // Pre-encode logo as base64 in the controller so the view stays clean.
-        // Resize to ~100px height to keep PDF file size reasonable.
-        $logoBase64 = $this->buildLogoBase64(100);
+        $logoBase64   = $this->buildLogoBase64(100);
+        $filterLabel  = $warehouseId
+            ? ($warehouses->firstWhere('id', $warehouseId)?->name ?? 'Gudang Terpilih')
+            : 'Semua Gudang';
 
         $pdf = Pdf::loadView('reports.inventory-pdf', compact(
             'warehouses', 'stockSummary', 'totalValue', 'totalStock',
-            'criticalItems', 'recentTransactions', 'logoBase64'
+            'criticalItems', 'recentTransactions', 'logoBase64', 'filterLabel'
         ))
         ->setPaper('a4', 'landscape')
         ->setOptions([
-            'defaultFont'  => 'DejaVu Sans',
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled'     => false,
+            'defaultFont'             => 'DejaVu Sans',
+            'isHtml5ParserEnabled'    => true,
+            'isRemoteEnabled'         => false,
             'isFontSubsettingEnabled' => true,
             'dpi' => 100,
         ]);
 
-        $filename = 'SmartStock_Pro_Laporan_Inventaris_' . now()->format('d-m-Y') . '.pdf';
+        $suffix   = $warehouseId ? '_gudang' . $warehouseId : '_semua';
+        $filename = 'SmartStock_Laporan_Inventaris' . $suffix . '_' . now()->format('d-m-Y') . '.pdf';
+
+        return response($pdf->output(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
+
+    /**
+     * Laporan Transaksi — histori masuk/keluar dalam rentang tanggal.
+     */
+    private function generateTransactionPdfInline(Request $request): Response
+    {
+        $dateFrom = $request->filled('date_from')
+            ? \Carbon\Carbon::parse($request->input('date_from'))->startOfDay()
+            : now()->startOfMonth();
+
+        $dateTo = $request->filled('date_to')
+            ? \Carbon\Carbon::parse($request->input('date_to'))->endOfDay()
+            : now()->endOfDay();
+
+        $transactions = InventoryTransaction::with(['product', 'warehouse', 'operator'])
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $totalIn  = $transactions->where('type', 'masuk')->sum('quantity');
+        $totalOut = $transactions->where('type', 'keluar')->sum('quantity');
+
+        // Rekap per gudang
+        $warehouseSummary = InventoryTransaction::join('warehouses', 'inventory_transactions.warehouse_id', '=', 'warehouses.id')
+            ->select(
+                'warehouses.name as warehouse_name',
+                DB::raw('COUNT(*) as jumlah_transaksi'),
+                DB::raw("SUM(CASE WHEN type='masuk'  THEN quantity ELSE 0 END) AS total_masuk"),
+                DB::raw("SUM(CASE WHEN type='keluar' THEN quantity ELSE 0 END) AS total_keluar"),
+            )
+            ->whereBetween('inventory_transactions.created_at', [$dateFrom, $dateTo])
+            ->groupBy('warehouses.id', 'warehouses.name')
+            ->orderBy('warehouses.name')
+            ->get();
+
+        $activeWarehouses = $warehouseSummary->count();
+        $logoBase64       = $this->buildLogoBase64(100);
+
+        $pdf = Pdf::loadView('reports.transaction-pdf', compact(
+            'transactions', 'totalIn', 'totalOut',
+            'warehouseSummary', 'activeWarehouses',
+            'dateFrom', 'dateTo', 'logoBase64'
+        ))
+        ->setPaper('a4', 'landscape')
+        ->setOptions([
+            'defaultFont'             => 'DejaVu Sans',
+            'isHtml5ParserEnabled'    => true,
+            'isRemoteEnabled'         => false,
+            'isFontSubsettingEnabled' => true,
+            'dpi' => 100,
+        ]);
+
+        $filename = 'SmartStock_Laporan_Transaksi_' . $dateFrom->format('d-m-Y') . '_sd_' . $dateTo->format('d-m-Y') . '.pdf';
 
         return response($pdf->output(), 200, [
             'Content-Type'        => 'application/pdf',
