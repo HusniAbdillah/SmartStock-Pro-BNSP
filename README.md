@@ -100,7 +100,7 @@ npm run dev
 php artisan serve
 ```
 
-Buka `http://localhost:8000` di browser.
+Buka **`http://127.0.0.1:8000`** di browser.
 
 **7. Queue worker** *(opsional — untuk ekspor laporan PDF besar)*
 
