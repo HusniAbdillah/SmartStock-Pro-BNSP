@@ -24,7 +24,7 @@ class ExampleTest extends TestCase
 
         $accounts = [
             'admin@smartstock.id'   => 'Admin',
-            'manager@smartstock.id' => 'Manajer Gudang',
+            'manajer@smartstock.id' => 'Manajer Gudang',
             'staf@smartstock.id'    => 'Staf Gudang',
             'viewer@smartstock.id'  => 'Viewer',
         ];

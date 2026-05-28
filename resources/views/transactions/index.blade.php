@@ -5,7 +5,7 @@
 @section('content')
 <x-page-header title="Riwayat Transaksi" description="Semua aktivitas barang masuk, keluar, dan transfer.">
     <x-slot name="actions">
-        @if(auth()->user()->isAdmin() || auth()->user()->isManagerGudang() || auth()->user()->isStaffGudang())
+        @if(auth()->user()->canModify())
         <a href="{{ route('transactions.create') }}" class="btn-primary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             Catat Transaksi
