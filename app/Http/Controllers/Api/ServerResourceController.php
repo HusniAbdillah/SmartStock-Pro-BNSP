@@ -28,6 +28,7 @@ class ServerResourceController extends Controller
             'cpu'           => max(1, min(100, $cpu)),
             'memory'        => max(1, min(100, $memory)),
             'response_time' => max(10, $responseTime),
+            'php_version'   => PHP_VERSION,
             'timestamp'     => now()->toISOString(),
         ]);
     }

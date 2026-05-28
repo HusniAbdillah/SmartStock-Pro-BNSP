@@ -12,11 +12,16 @@ class NotificationController extends Controller
     public function unread(): JsonResponse
     {
         /** @var \App\Models\User $user */
-        $user          = Auth::user();
+        $user = Auth::user();
+
+        // Use toBase() to convert Eloquent\Collection → Support\Collection before
+        // mapping to plain arrays. Without this, map() returns an Eloquent\Collection
+        // whose merge() implementation calls getKey() on each item, which fails for arrays.
         $notifications = $user->unreadNotifications()
             ->latest()
             ->take(10)
             ->get()
+            ->toBase()
             ->map(fn($n) => [
                 'id'         => $n->id,
                 'type'       => $n->type,
@@ -25,11 +30,11 @@ class NotificationController extends Controller
                 'created_at' => $n->created_at->diffForHumans(),
             ]);
 
-        // Also include recently read notifications (for dropdown history)
         $recent = $user->readNotifications()
             ->latest()
             ->take(5)
             ->get()
+            ->toBase()
             ->map(fn($n) => [
                 'id'         => $n->id,
                 'type'       => $n->type,
